@@ -102,7 +102,7 @@ class User(ft.UserControl):
             )
 
         img_data_old = self.load_image(self.user_data.get('face_image', None) or '')
-        img_data_new = self.load_image(self.user_data.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
+        img_data_new = self.load_image(self.user.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
         
         if self.status == 'old': 
             controls = [

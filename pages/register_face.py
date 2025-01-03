@@ -209,12 +209,12 @@ class RegisterFace(ft.UserControl):
                 json.dump(all_users, f, indent=4)
             
             status = 'new'
-            self.page.client_storage('status', status)
-            #self.page.client_storage.set("recognized_user_data", user_data) # leverage on this later to try to solve the not showing image.
+            self.page.client_storage.set('status', status)
+            self.page.client_storage.set("recognized_user_data", user_data) # leverage on this later to try to solve the not showing image.
             update_attendance(email=email, action='sign_in')
             self.camera_manager.release_camera()
             self.show_snackbar('Face registered successfully!')
-            self.page.go('/register')
+            self.page.go('/user')
 
         except Exception as e:
             self.show_snackbar(f"An error occurred while processing the image. Please try again. {e}")
