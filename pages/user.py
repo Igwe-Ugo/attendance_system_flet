@@ -6,11 +6,13 @@ import datetime, json
 from pages.ultils import update_attendance
 
 class User(ft.UserControl):
-    def __init__(self, page, user_data):
+    def __init__(self, page, user_data, status):
         super().__init__()
         self.page = page
         self.user_data = user_data
         self.running = True
+        self.status = status
+        self.user = self.get_latest_user()
         self.admin_email = "ugo2000igwe12@gmail.com"  # Replace with the admin email
         self.no_user = ft.Icon(
             name=ft.icons.IMAGE_OUTLINED,
@@ -44,6 +46,14 @@ class User(ft.UserControl):
             padding=ft.padding.only(left=70, right=70, top=10, bottom=10),
             on_click=self.download_activity_log,
         )
+
+    def get_latest_user(self):
+        if os.path.exists('registered_faces.json'):
+            with open('registered_faces.json', 'r') as f:
+                all_users = json.load(f)
+                if all_users:
+                    return all_users[-1] # return the last registered user
+        return None
 
     def load_image(self, path):
         print(f"Loading image from path: {path}")
@@ -91,23 +101,38 @@ class User(ft.UserControl):
                 ]
             )
 
-        img_data = self.load_image(self.user_data.get('face_image', None) or '')
+        img_data_old = self.load_image(self.user_data.get('face_image', None) or '')
+        img_data_new = self.load_image(self.user_data.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
         
-        controls = [
-            ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
-            ft.Text('Face Recognized!', size=21, weight=ft.FontWeight.W_900),
-            ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-            ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
-            ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
-            ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
-            ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
-            ft.Divider(height=20, color='transparent'),
-            self.go_home_button,
-            ft.Divider(height=30, color='transparent'),
-        ]
+        if self.status == 'old': 
+            controls = [
+                ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
+                ft.Text('Face Recognized!', size=21, weight=ft.FontWeight.W_900),
+                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
+                ft.Image(src_base64=img_data_old) if img_data_old else ft.Text('No Image available'),
+                ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
+                ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
+                ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
+                ft.Divider(height=20, color='transparent'),
+                self.go_home_button,
+                ft.Divider(height=30, color='transparent'),
+            ]
+        elif self.status == 'new':
+            controls = [
+                ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
+                ft.Text('Registeration successful!', size=21, weight=ft.FontWeight.W_900),
+                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
+                ft.Image(src_base64=img_data_new) if img_data_new else ft.Text('No Image available'),
+                ft.Text(f"Full Name: {self.user.get('fullname', 'N/A')}"),
+                ft.Text(f"Email: {self.user.get('email', 'N/A')}"),
+                ft.Text(f"Phone: {self.user.get('telephone', 'N/A')}"),
+                ft.Divider(height=15, color='transparent'),
+                self.go_home_button,
+                ft.Divider(height=15, color='transparent'),
+            ]
 
         # Show admin button if the logged-in user is the admin
-        if self.user_data.get('email') == self.admin_email:
+        if self.user_data.get('email') == self.admin_email or self.user.get('email') == self.admin_email:
             controls.append(self.download_button)
 
         return ft.Container(

@@ -208,7 +208,9 @@ class RegisterFace(ft.UserControl):
             with open('registered_faces.json', 'w') as f:
                 json.dump(all_users, f, indent=4)
             
-            self.page.client_storage.set("recognized_user_data", user_data)
+            status = 'new'
+            self.page.client_storage('status', status)
+            #self.page.client_storage.set("recognized_user_data", user_data) # leverage on this later to try to solve the not showing image.
             update_attendance(email=email, action='sign_in')
             self.camera_manager.release_camera()
             self.show_snackbar('Face registered successfully!')

@@ -6,7 +6,6 @@ from pages.register_face import RegisterFace
 from pages.user import User
 from pages.signin import SignInPage
 from pages.ultils import CameraManager
-from pages.register import Register
 
 def main(page: ft.Page):
     page.title = "Flet Face Recognition Application"
@@ -70,28 +69,19 @@ def main(page: ft.Page):
             # Extract user data from the route
             print("Loading User page")
             user_data = page.client_storage.get("recognized_user_data")
+            status = page.client_storage.get('status')
             if user_data:
-                user_instance = User(page, user_data)
                 page.views.append(
                     ft.View(
                         route="/user",
                         controls=[
-                            user_instance,
+                            User(page=page, status=status, user_data=user_data),
                         ]
                     )
                 )
             else:
                 show_snackbar('No User found with this face, please signup! Redirecting to Sign Up...')
                 page.go("/signup")
-        elif page.route == "/register":
-            page.views.append(
-                ft.View(
-                    route="/register",
-                    controls=[
-                        Register(page),
-                    ]
-                )
-            )
         elif page.route == "/signin":
             page.views.append(
                 ft.View(

@@ -185,6 +185,8 @@ class SignInPage(ft.UserControl):
                     self.show_snackbar(f"Welcome back, {best_match['fullname']}!")
                     self.page.client_storage.set("recognized_user_data", best_match)
                     email = best_match['email']
+                    status = 'old'
+                    self.page.client_storage.set('status', status)
                     message = update_attendance(email=email, action='sign_in')
                     self.show_snackbar(message)
                     self.show_user()
