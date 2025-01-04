@@ -151,7 +151,7 @@ class SignInPage(ft.UserControl):
             # Validate cropped face
             if cropped_face is None or cropped_face.size == 0:
                 self.toggle_loading(False)
-                self.show_snackbar("Unable to crop the face. Please try again.")
+                self.show_snackbar("Unable to crop the face. Please try again.")    
                 return
 
             # Get face embedding

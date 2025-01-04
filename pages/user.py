@@ -131,7 +131,7 @@ class User(ft.UserControl):
             ]
 
         # Show admin button if the logged-in user is the admin
-        if self.user_data.get('email') == self.admin_email or self.user.get('email') == self.admin_email:
+        if plain_email == self.admin_email:
             controls.append(self.download_button)
 
         return ft.Container(
