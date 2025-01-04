@@ -51,12 +51,14 @@ class RegisterFace(ft.UserControl):
         )
 
     def did_mount(self):
+        self.running = True # This was the fix that caused the system not to lag again... Thank God for the help.
         self.update_cam_timer()
 
     def will_unmount(self):
         self.running = False
         if self.camera is not None:
             self.camera_manager.release_camera()
+            self.camera = None
 
     def toggle_loading(self, show):
         '''
@@ -66,14 +68,15 @@ class RegisterFace(ft.UserControl):
         self.page.update()
 
     def update_cam_timer(self):
+        # start a thread to update the camera feed
         def update():
             while self.running:
                 ret, frame = self.camera.read()
                 if not ret or frame is None:
                     if not self.running:  # Stop if the class is unmounted or navigation occurred
                         break
-                    self.show_snackbar('Error: Failed to grab frame')
-                    time.sleep(0.1)
+                    #self.show_snackbar('Error: Failed to grab frame')
+                    #time.sleep(0.1)
                     continue
 
                 try:

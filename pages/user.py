@@ -101,15 +101,15 @@ class User(ft.UserControl):
                 ]
             )
 
-        img_data_old = self.load_image(self.user_data.get('face_image', None) or '')
-        img_data_new = self.load_image(self.user.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
+        img_data = self.load_image(self.user_data.get('face_image', None) or '')
+        #img_data_new = self.load_image(self.user.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
         
         if self.status == 'old': 
             controls = [
                 ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
                 ft.Text('Face Recognized!', size=21, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data_old) if img_data_old else ft.Text('No Image available'),
+                ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
                 ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
                 ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
                 ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
@@ -122,10 +122,10 @@ class User(ft.UserControl):
                 ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
                 ft.Text('Registeration successful!', size=21, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data_new) if img_data_new else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {self.user.get('fullname', 'N/A')}"),
-                ft.Text(f"Email: {self.user.get('email', 'N/A')}"),
-                ft.Text(f"Phone: {self.user.get('telephone', 'N/A')}"),
+                ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
+                ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
+                ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
+                ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
                 ft.Divider(height=15, color='transparent'),
                 self.go_home_button,
                 ft.Divider(height=15, color='transparent'),
