@@ -3,7 +3,7 @@ import numpy as np
 import cvzone
 import os, cv2, json, base64, threading, time
 from datetime import datetime as dt
-from pages.ultils import FaceDetector, calculate_embedding, center_crop_frame, update_attendance
+from pages.ultils import FaceDetector, calculate_embedding, center_crop_frame, update_attendance, encrypt_data
 
 class RegisterFace(ft.UserControl):
     def __init__(self, page, camera_manager):
@@ -184,6 +184,11 @@ class RegisterFace(ft.UserControl):
             os.makedirs(save_encoding, exist_ok=True)
             encoding_path = os.path.join(save_encoding, f'{email}_encoding.npy')
             np.save(encoding_path, face_encoding)
+
+            # encrypting data
+            fullname = encrypt_data(fullname)
+            email = encrypt_data(email)
+            telephone = encrypt_data(telephone)
             
             # Prepare user data
             user_data = {

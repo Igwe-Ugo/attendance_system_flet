@@ -3,7 +3,7 @@ import os, io, base64
 from PIL import Image
 import pandas as pd
 import datetime, json
-from pages.ultils import update_attendance
+from pages.ultils import update_attendance, decrypt_data
 
 class User(ft.UserControl):
     def __init__(self, page, user_data, status):
@@ -12,7 +12,6 @@ class User(ft.UserControl):
         self.user_data = user_data
         self.running = True
         self.status = status
-        self.user = self.get_latest_user()
         self.admin_email = "ugo2000igwe12@gmail.com"  # Replace with the admin email
         self.no_user = ft.Icon(
             name=ft.icons.IMAGE_OUTLINED,
@@ -47,14 +46,6 @@ class User(ft.UserControl):
             on_click=self.download_activity_log,
         )
 
-    def get_latest_user(self):
-        if os.path.exists('registered_faces.json'):
-            with open('registered_faces.json', 'r') as f:
-                all_users = json.load(f)
-                if all_users:
-                    return all_users[-1] # return the last registered user
-        return None
-
     def load_image(self, path):
         print(f"Loading image from path: {path}")
         if os.path.exists(path):
@@ -75,7 +66,7 @@ class User(ft.UserControl):
         self.page.client_storage.set("current_page", "/user")
 
     def build(self):
-        if not self.user_data:
+        if not self.user_data or self.user == None:
             return ft.View(
                 controls = [
                     ft.AppBar(
@@ -101,8 +92,16 @@ class User(ft.UserControl):
                 ]
             )
 
+        encrypted_fullname = self.user_data.get('fullname', 'N/A')
+        encrypted_email = self.user_data.get('email', 'N/A')
+        encrypted_telephone = self.user_data.get('telephone', 'N/A')
+
+        # decrypting the user details
+        plain_fullname = decrypt_data(encrypted_fullname)
+        plain_email = decrypt_data(encrypted_email)
+        plain_telephone = decrypt_data(encrypted_telephone)
+
         img_data = self.load_image(self.user_data.get('face_image', None) or '')
-        #img_data_new = self.load_image(self.user.get('face_image', None) or '') # just passed this in to know if it will work for the image 'user_data' here
         
         if self.status == 'old': 
             controls = [
@@ -110,9 +109,9 @@ class User(ft.UserControl):
                 ft.Text('Face Recognized!', size=21, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
                 ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
-                ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
-                ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
+                ft.Text(f"Full Name: {plain_fullname}"),
+                ft.Text(f"Email: {plain_email}"),
+                ft.Text(f"Phone: {plain_telephone}"),
                 ft.Divider(height=20, color='transparent'),
                 self.go_home_button,
                 ft.Divider(height=30, color='transparent'),
@@ -123,9 +122,9 @@ class User(ft.UserControl):
                 ft.Text('Registeration successful!', size=21, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
                 ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {self.user_data.get('fullname', 'N/A')}"),
-                ft.Text(f"Email: {self.user_data.get('email', 'N/A')}"),
-                ft.Text(f"Phone: {self.user_data.get('telephone', 'N/A')}"),
+                ft.Text(f"Full Name: {plain_fullname}"),
+                ft.Text(f"Email: {plain_email}"),
+                ft.Text(f"Phone: {plain_telephone}"),
                 ft.Divider(height=15, color='transparent'),
                 self.go_home_button,
                 ft.Divider(height=15, color='transparent'),

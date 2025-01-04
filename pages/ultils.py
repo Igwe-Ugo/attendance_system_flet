@@ -3,6 +3,7 @@ import numpy as np
 import mediapipe as mp
 import tensorflow as tf
 from datetime import datetime as dt
+import flet.security as sec
 
 def triplet_loss(y_true, y_pred, alpha=0.2):
     batch_size = tf.shape(y_pred)[0] // 3
@@ -157,3 +158,12 @@ def update_attendance(email, action):
         # Save updated data
         with open('registered_faces.json', 'w') as f:
             json.dump(all_users, f, indent=4)
+
+
+# encrypt data
+def encrypt_data(data: str) -> str:
+    return sec.encrypt(data)
+
+# decrypt data
+def decrypt_data(data: str) -> str:
+    return sec.decrypt(data)

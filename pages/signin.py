@@ -5,7 +5,8 @@ import base64
 import os, time
 import json
 import numpy as np
-from pages.ultils import compute_similarity, calculate_embedding, FaceDetector, center_crop_frame, update_attendance
+from flet.security import decrypt
+from pages.ultils import compute_similarity, calculate_embedding, FaceDetector, center_crop_frame, update_attendance, decrypt_data
 
 
 class SignInPage(ft.UserControl):
@@ -15,6 +16,7 @@ class SignInPage(ft.UserControl):
         self.camera_manager = camera_manager
         self.camera = self.camera_manager.get_camera() # Get shared camera instance
         self.face_detector = FaceDetector()
+        self.secret_key = os.getenv('ATTENDANCE_SYSTEM_SECRET_KEY')
         self.running = True
         self.img = ft.Image(
             border_radius=ft.border_radius.all(20),
@@ -172,6 +174,8 @@ class SignInPage(ft.UserControl):
                 best_similarity = -1
                 
                 for user in user_data:
+                    email = decrypt_data(user['email'])
+                    fullname = decrypt_data(user['fullname'])
                     registered_encoding = np.load(user['face_encoding'])
                     similarity = compute_similarity(registered_encoding, unknown_encoding)
                     
@@ -179,19 +183,19 @@ class SignInPage(ft.UserControl):
                         best_similarity = similarity
                         best_match = user
 
-                threshold = 0.4  # Adjust this threshold as needed
+                    threshold = 0.4  # Adjust this threshold as needed
                 
-                if best_similarity >= threshold:
-                    self.show_snackbar(f"Welcome back, {best_match['fullname']}!")
-                    self.page.client_storage.set("recognized_user_data", best_match)
-                    email = best_match['email']
-                    status = 'old'
-                    self.page.client_storage.set('status', status)
-                    message = update_attendance(email=email, action='sign_in')
-                    self.show_snackbar(message)
-                    self.show_user()
-                else:
-                    self.show_snackbar("Face not recognized. Please try again.")
+                    if best_similarity >= threshold:
+                        self.show_snackbar(f"Welcome back, {fullname}!")
+                        self.page.client_storage.set("recognized_user_data", best_match)
+                        email = best_match['email']
+                        status = 'old'
+                        self.page.client_storage.set('status', status)
+                        message = update_attendance(email=email, action='sign_in')
+                        self.show_snackbar(message)
+                        self.show_user()
+                    else:
+                        self.show_snackbar("Face not recognized. Please try again.")
             else:
                 self.show_snackbar("No registered users found. Please sign up first.")
         except Exception as e:
