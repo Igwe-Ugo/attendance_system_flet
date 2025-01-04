@@ -3,7 +3,7 @@ import os, io, base64
 from PIL import Image
 import pandas as pd
 import datetime, json
-from pages.ultils import update_attendance, decrypt_data
+from pages.ultils import update_attendance, DataCipher
 
 class User(ft.UserControl):
     def __init__(self, page, user_data, status):
@@ -12,6 +12,7 @@ class User(ft.UserControl):
         self.user_data = user_data
         self.running = True
         self.status = status
+        self.data_cipher = DataCipher()
         self.admin_email = "ugo2000igwe12@gmail.com"  # Replace with the admin email
         self.no_user = ft.Icon(
             name=ft.icons.IMAGE_OUTLINED,
@@ -66,7 +67,7 @@ class User(ft.UserControl):
         self.page.client_storage.set("current_page", "/user")
 
     def build(self):
-        if not self.user_data or self.user == None:
+        if not self.user_data:
             return ft.View(
                 controls = [
                     ft.AppBar(
@@ -97,9 +98,9 @@ class User(ft.UserControl):
         encrypted_telephone = self.user_data.get('telephone', 'N/A')
 
         # decrypting the user details
-        plain_fullname = decrypt_data(encrypted_fullname)
-        plain_email = decrypt_data(encrypted_email)
-        plain_telephone = decrypt_data(encrypted_telephone)
+        plain_fullname = self.data_cipher.decrypt_data(encrypted_fullname)
+        plain_email = self.data_cipher.decrypt_data(encrypted_email)
+        plain_telephone = self.data_cipher.decrypt_data(encrypted_telephone)
 
         img_data = self.load_image(self.user_data.get('face_image', None) or '')
         

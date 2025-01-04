@@ -3,7 +3,7 @@ import numpy as np
 import cvzone
 import os, cv2, json, base64, threading, time
 from datetime import datetime as dt
-from pages.ultils import FaceDetector, calculate_embedding, center_crop_frame, update_attendance, encrypt_data
+from pages.ultils import FaceDetector, calculate_embedding, center_crop_frame, update_attendance, DataCipher
 
 class RegisterFace(ft.UserControl):
     def __init__(self, page, camera_manager):
@@ -11,6 +11,7 @@ class RegisterFace(ft.UserControl):
         self.page = page
         self.running = True
         self.face_detector = FaceDetector()
+        self.data_cipher = DataCipher()
         self.camera_manager = camera_manager
         self.camera = self.camera_manager.get_camera()
         self.img = ft.Image(
@@ -186,15 +187,20 @@ class RegisterFace(ft.UserControl):
             np.save(encoding_path, face_encoding)
 
             # encrypting data
-            fullname = encrypt_data(fullname)
-            email = encrypt_data(email)
-            telephone = encrypt_data(telephone)
+            try:
+                fullname_encrypted = self.data_cipher.encrypt_data(fullname) if fullname else None
+                email_encrypted = self.data_cipher.encrypt_data(email) if email else None
+                telephone_encrypted = self.data_cipher.encrypt_data(telephone) if telephone else None
+            except Exception as e:
+                self.show_snackbar(f"Encryption error: {e}")
+                print(f'{e}')
+                return
             
             # Prepare user data
             user_data = {
-                "fullname": fullname,
-                "email": email,
-                "telephone": telephone,
+                "fullname": fullname_encrypted,
+                "email": email_encrypted,
+                "telephone": telephone_encrypted,
                 "face_image": image_path,
                 "face_encoding": encoding_path,
                 'total_attendance': 0,
@@ -219,12 +225,13 @@ class RegisterFace(ft.UserControl):
             status = 'new'
             self.page.client_storage.set('status', status)
             self.page.client_storage.set("recognized_user_data", user_data) # leverage on this later to try to solve the not showing image.
-            update_attendance(email=email, action='sign_in')
+            update_attendance(email=email_encrypted, action='sign_in')
             self.camera_manager.release_camera()
             self.show_snackbar('Face registered successfully!')
             self.page.go('/user')
 
         except Exception as e:
             self.show_snackbar(f"An error occurred while processing the image. Please try again. {e}")
+            print(f'{e}')
         finally:
             self.toggle_loading(False) # hide loading animation
