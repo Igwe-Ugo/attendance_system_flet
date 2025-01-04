@@ -177,10 +177,13 @@ class User(ft.UserControl):
             extracted_data = []
             for user_data in activity_data:
                 for attendance in user_data.get("attendance_status", []):
+                    fullname = self.data_cipher.decrypt_data(user_data["fullname"])
+                    email = self.data_cipher.decrypt_data(user_data["email"])
+                    telephone = self.data_cipher.decrypt_data(user_data["telephone"])
                     extracted_data.append({
-                        "fullname": user_data["fullname"],
-                        "email": user_data["email"],
-                        "telephone": user_data["telephone"],
+                        "fullname": fullname,
+                        "email": email,
+                        "telephone": telephone,
                         "sign_in_time": attendance["sign_in_time"],
                         "sign_out_time": attendance["sign_out_time"],
                         "total_attendance": user_data["total_attendance"],
