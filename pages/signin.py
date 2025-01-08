@@ -14,6 +14,7 @@ class SignInPage(ft.UserControl):
         super().__init__()
         self.page = page
         self.camera_manager = camera_manager
+        self.file_data_path = 'application_data/application_storage/registered_data.json'
         self.camera = self.camera_manager.get_camera() # Get shared camera instance
         self.face_detector = FaceDetector()
         self.data_cipher = DataCipher()
@@ -162,9 +163,9 @@ class SignInPage(ft.UserControl):
                 return
 
             # Rest of the logic
-            if os.path.exists('registered_faces.json'):
+            if os.path.exists(self.file_data_path):
                 try:
-                    with open('registered_faces.json', 'r') as f:
+                    with open(self.file_data_path, 'r') as f:
                         user_data = json.load(f)
                 except (FileNotFoundError, json.JSONDecodeError):
                     self.show_snackbar("Error reading registered faces file. Please try again.")

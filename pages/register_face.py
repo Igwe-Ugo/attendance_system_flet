@@ -209,8 +209,11 @@ class RegisterFace(ft.UserControl):
             }
             
             # Load existing data or create new file
-            if os.path.exists('registered_faces.json'):
-                with open('registered_faces.json', 'r') as f:
+            save_data = os.path.join('application_data', 'application_storage')
+            os.makedirs(save_data, exist_ok=True)
+            register_data = os.path.join(save_data, 'registered_data.json')
+            if os.path.exists(register_data):
+                with open(register_data, 'r') as f:
                     all_users = json.load(f)
             else:
                 all_users = []
@@ -219,7 +222,7 @@ class RegisterFace(ft.UserControl):
             all_users.append(user_data)
 
             # Save updated data
-            with open('registered_faces.json', 'w') as f:
+            with open(register_data, 'w') as f:
                 json.dump(all_users, f, indent=4)
             
             status = 'new'

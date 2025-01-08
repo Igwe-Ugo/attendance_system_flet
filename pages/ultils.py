@@ -101,8 +101,9 @@ def center_crop_frame(frame, size=400):
 
 def update_attendance(email, action):
     # Load existing data or create a new file
-    if os.path.exists('registered_faces.json'):
-        with open('registered_faces.json', 'r') as f:
+    file_path = 'application_data/application_storage/registered_data.json'
+    if os.path.exists(file_path):
+        with open(file_path, 'r') as f:
             all_users = json.load(f)
     else:
         print("Error: No registered users found.")
@@ -156,7 +157,7 @@ def update_attendance(email, action):
         print(f"Error: No user found with email {email}. Please register first.")
     else:
         # Save updated data
-        with open('registered_faces.json', 'w') as f:
+        with open(file_path, 'w') as f:
             json.dump(all_users, f, indent=4)
 
 class DataCipher:
@@ -170,12 +171,15 @@ class DataCipher:
         '''
         try:
             # try to load the key from the key file
-            with open(self.key_file, 'rb') as key_file:
+            save_key = os.path.join('application_data', 'application_storage')
+            os.makedirs(save_key, exist_ok=True)
+            register_key = os.path.join(save_key, self.key_file)
+            with open(register_key, 'rb') as key_file:
                 key = key_file.read()
         except FileNotFoundError:
             # generate a new key if the file doesn't exist
             key = Fernet.generate_key()
-            with open(self.key_file, 'wb') as key_file:
+            with open(register_key, 'wb') as key_file:
                 key_file.write(key)
         return Fernet(key)
     

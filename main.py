@@ -8,7 +8,7 @@ from pages.signin import SignInPage
 from pages.ultils import CameraManager
 
 def main(page: ft.Page):
-    page.title = "Flet Face Recognition Application"
+    page.title = "Flet Access Control System"
     page.theme_mode = ft.ThemeMode.DARK
     camera_manager = CameraManager()
 
@@ -36,8 +36,8 @@ def main(page: ft.Page):
                             leading=ft.IconButton(
                                 icon=ft.icons.ARROW_BACK_IOS,
                                 icon_size=20,
-                                tooltip='Back to Landing Page',
-                                on_click=lambda _: page.go("/")
+                                tooltip='Back',
+                                on_click=lambda _: page.go("/user")
                             ),
                             title=ft.Text("Sign Up"),
                             bgcolor=ft.colors.SURFACE_VARIANT

@@ -1,5 +1,6 @@
-import re
 import flet as ft
+import re, os, json
+from pages.ultils import DataCipher
 
 link_style = {
     "height": 50,
@@ -15,12 +16,14 @@ link_style = {
     )
 }
 
+phone_regex = r"^\+?[1-9]\d{0,2}[-.\s]?(\(\d{1,4}\)|\d{1,4})[-.\s]?\d{1,4}[-.\s]?\d{1,9}$"
 regexEmail = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
 
 class SignUpPage(ft.UserControl):
     def __init__(self, page) -> None:
         super().__init__()
         self.page = page
+        self.data_cipher = DataCipher()
 
         self.fullname = ft.TextField(
             password=False,
@@ -123,13 +126,48 @@ class SignUpPage(ft.UserControl):
         email_address = self.email_address.value
         telephone = self.telephone.value
 
+        # Check if all fields are filled
         if not (fullname and email_address and telephone):
             self.show_snackbar("All fields must be filled to proceed.")
-        elif not re.match(regexEmail, email_address):
+            return
+
+        # Validate email address
+        if not re.match(regexEmail, email_address):
             self.show_snackbar("Invalid email address. Please enter a valid email.")
-        else:
-            # Store user credentials in client_storage
-            self.page.client_storage.set("fullname", fullname)
-            self.page.client_storage.set("email", email_address)
-            self.page.client_storage.set("telephone", telephone)
-            self.page.go('/register_face')
+            return
+
+        # Validate phone number
+        if not re.match(phone_regex, telephone):
+            self.show_snackbar('Invalid phone number. Please ensure it follows the correct format.')
+            return
+
+        # Check if the email or phone number is already registered
+        data_path = 'application_data/application_storage/registered_data.json'
+        if os.path.exists(data_path):
+            try:
+                with open(data_path, 'r') as f:
+                    registered_users = json.load(f)
+
+                # Check for duplicates
+                for user in registered_users:
+                    fullname = self.data_cipher.decrypt_data(user["fullname"])
+                    email = self.data_cipher.decrypt_data(user["email"])
+                    telephone = self.data_cipher.decrypt_data(user["telephone"])
+                    if email == email_address:
+                        self.show_snackbar("Email address has already been used. Please try with another email.")
+                        return
+                    if telephone == telephone:
+                        self.show_snackbar("Phone number has already been used. Please try with another number.")
+                        return
+            except (FileNotFoundError, json.JSONDecodeError) as ex:
+                self.show_snackbar(f"Error checking registration file: {str(ex)}")
+                return
+
+        # Store user credentials in client_storage
+        self.page.client_storage.set("fullname", fullname)
+        self.page.client_storage.set("email", email_address)
+        self.page.client_storage.set("telephone", telephone)
+
+        # Proceed to the next page
+        self.page.go('/register_face')
+

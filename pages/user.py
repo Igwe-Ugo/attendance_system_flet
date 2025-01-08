@@ -18,7 +18,7 @@ class User(ft.UserControl):
             name=ft.icons.IMAGE_OUTLINED,
             scale=ft.Scale(5)
         )
-        self.go_home_button = ft.Row(
+        self.signout_button = ft.Row(
             controls=[
                 ft.Container(
                     border_radius=5,
@@ -28,13 +28,31 @@ class User(ft.UserControl):
                         colors=['#ea580c', '#4f46e5'],
                     ),
                     content=ft.Text('Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
-                    padding=ft.padding.only(left=50, right=50, top=10, bottom=10),
+                    padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
                     on_click=self.go_home,
                 )
             ],
             alignment='center',
             vertical_alignment='center'
         )
+
+        self.buttonSignUp = ft.Container(
+            border_radius=5,
+            expand=True,
+            bgcolor='#4f46e5',
+            gradient=ft.LinearGradient(
+                colors=['#ea580c', '#4f46e5'],
+            ),
+            content=ft.Text(
+                'Register New User',
+                color='white',
+                size=18,
+                text_align=ft.TextAlign.CENTER
+            ),
+            padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
+            on_click=self.sign_up,
+        )
+
         self.download_button = ft.Container(
             border_radius=5,
             expand=True,
@@ -42,17 +60,20 @@ class User(ft.UserControl):
             gradient=ft.LinearGradient(
                 colors=['#bbf7d0', '#86efac', '#3b82f6'],
             ),
-            content=ft.Text('Download Activity Log', text_align=ft.TextAlign.CENTER, size=20, color=ft.colors.WHITE),
-            padding=ft.padding.only(left=70, right=70, top=10, bottom=10),
+            content=ft.Text('Download Activity Log', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
+            padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
             on_click=self.download_activity_log,
         )
+
+    def sign_up(self, e):
+        self.page.go('/signup')
 
     def load_image(self, path):
         print(f"Loading image from path: {path}")
         if os.path.exists(path):
             try:
                 with Image.open(path) as img:
-                    img = img.resize((400, 400))  # Resize image for display
+                    img = img.resize((250, 250))  # Resize image for display
                     buffered = io.BytesIO()
                     img.save(buffered, format='PNG')
                     return base64.b64encode(buffered.getvalue()).decode()
@@ -106,46 +127,72 @@ class User(ft.UserControl):
         
         if self.status == 'old': 
             controls = [
-                ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
-                ft.Text('Face Recognized!', size=21, weight=ft.FontWeight.W_900),
+                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
+                ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
                 ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
                 ft.Text(f"Full Name: {plain_fullname}"),
                 ft.Text(f"Email: {plain_email}"),
                 ft.Text(f"Phone: {plain_telephone}"),
-                ft.Divider(height=20, color='transparent'),
-                self.go_home_button,
-                ft.Divider(height=30, color='transparent'),
+                ft.Divider(height=10, color='transparent'),
+                self.signout_button,
+                ft.Divider(height=10, color='transparent'),
             ]
         elif self.status == 'new':
             controls = [
-                ft.Text('RESTRICTED AREA', size=24, weight=ft.FontWeight.BOLD),
-                ft.Text('Registeration successful!', size=21, weight=ft.FontWeight.W_900),
+                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
+                ft.Text('Registeration successful!', size=19, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
                 ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
                 ft.Text(f"Full Name: {plain_fullname}"),
                 ft.Text(f"Email: {plain_email}"),
                 ft.Text(f"Phone: {plain_telephone}"),
-                ft.Divider(height=15, color='transparent'),
-                self.go_home_button,
-                ft.Divider(height=15, color='transparent'),
+                ft.Divider(height=10, color='transparent'),
+                self.signout_button,
+                ft.Divider(height=10, color='transparent'),
             ]
 
         # Show admin button if the logged-in user is the admin
         if plain_email == self.admin_email:
-            controls.append(self.download_button)
+            controls.append(
+                ft.Column(
+                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                    controls=[
+                        ft.Divider(height=10, color='transparent'),
+                        ft.Text(
+                            "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
+                            size=15,
+                            weight=ft.FontWeight.W_800
+                        ),
+                        ft.Divider(height=10, color='transparent'),
+                        ft.Row(
+                            controls=[
+                                self.buttonSignUp,
+                                self.download_button
+                            ],
+                            alignment='center',
+                            spacing=20
+                        )
+                    ]
+                )
+            )
 
         return ft.Container(
+            expand=True,
             content=ft.Column(
                 controls,
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-                spacing=10,
+                spacing=5,
                 alignment=ft.MainAxisAlignment.CENTER,
-                scroll=ft.ScrollMode.ALWAYS,  # Enables scrolling when content exceeds space
+                scroll=ft.ScrollMode.AUTO,  # Enables scrolling when content exceeds space
+                on_scroll=self.on_scroll,
             ),
             alignment=ft.alignment.center,
             padding=20
         )
+    
+    def on_scroll(self, event):
+        print(f"Scrolled to offset: {event.pixels}")
 
     def go_home(self, e):
         email = self.user_data.get('email')
@@ -165,9 +212,10 @@ class User(ft.UserControl):
     def download_activity_log(self, e):
         """Generate and download the activity log as a CSV file."""
         try:
+            data_path = 'application_data/application_storage/registered_data.json'
             # Load activity log from a JSON file
-            if os.path.exists('registered_faces.json'):
-                with open('registered_faces.json', 'r') as f:
+            if os.path.exists(data_path):
+                with open(data_path, 'r') as f:
                     activity_data = json.load(f)
             else:
                 self.show_snackbar('No data present in the activity log for now. Try again later!')
