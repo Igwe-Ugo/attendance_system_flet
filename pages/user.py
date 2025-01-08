@@ -18,7 +18,7 @@ class User(ft.UserControl):
             name=ft.icons.IMAGE_OUTLINED,
             scale=ft.Scale(5)
         )
-        self.signout_button = ft.Row(
+        self.signout_button_user = ft.Row(
             controls=[
                 ft.Container(
                     border_radius=5,
@@ -28,6 +28,23 @@ class User(ft.UserControl):
                         colors=['#ea580c', '#4f46e5'],
                     ),
                     content=ft.Text('Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
+                    padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
+                    on_click=self.go_home,
+                )
+            ],
+            alignment='center',
+            vertical_alignment='center'
+        )
+        self.signout_button_admin = ft.Row(
+            controls=[
+                ft.Container(
+                    border_radius=5,
+                    expand=True,
+                    bgcolor='#4f46e5',
+                    gradient=ft.LinearGradient(
+                        colors=['#ea580c', '#4f46e5'],
+                    ),
+                    content=ft.Text('Admin Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
                     padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
                     on_click=self.go_home,
                 )
@@ -130,12 +147,12 @@ class User(ft.UserControl):
                 ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
                 ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data) if img_data else ft.Text('No Image available'),
+                ft.CircleAvatar(background_image_src=img_data, radius=10, height=250, width=250) if img_data else ft.Text('No Image available'),
                 ft.Text(f"Full Name: {plain_fullname}"),
                 ft.Text(f"Email: {plain_email}"),
                 ft.Text(f"Phone: {plain_telephone}"),
                 ft.Divider(height=10, color='transparent'),
-                self.signout_button,
+                self.signout_button_user,
                 ft.Divider(height=10, color='transparent'),
             ]
         elif self.status == 'new':
@@ -148,16 +165,21 @@ class User(ft.UserControl):
                 ft.Text(f"Email: {plain_email}"),
                 ft.Text(f"Phone: {plain_telephone}"),
                 ft.Divider(height=10, color='transparent'),
-                self.signout_button,
+                self.signout_button_user,
                 ft.Divider(height=10, color='transparent'),
             ]
 
         # Show admin button if the logged-in user is the admin
         if plain_email == self.admin_email:
+            # Filter out the unwanted widget
+            controls = [control for control in controls if control != self.signout_button_user]
+
+            # Add admin-specific widgets
             controls.append(
                 ft.Column(
                     horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                     controls=[
+                        self.signout_button_admin,
                         ft.Divider(height=10, color='transparent'),
                         ft.Text(
                             "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
