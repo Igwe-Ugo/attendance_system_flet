@@ -131,19 +131,62 @@ class Admin(ft.UserControl):
                 ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
                 ft.ListTile(
+                    is_three_line=True,
+                    expand=True,
                     leading=ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
                     title=ft.Text(f"Full Name: {plain_fullname}", weight=ft.FontWeight.W_400),
                     subtitle=ft.Text(f"Email: {plain_email} \n Phone: {plain_telephone}", weight=ft.FontWeight.W_300),
                 ),
-                ft.Divider(height=10, color='transparent'),
+                ft.Divider(height=5, color='transparent'),
                 self.signout_button_admin,
-                ft.Divider(height=10, color='transparent'),
+                ft.Divider(height=5, color='transparent'),
+                ft.Text('Budget Reports and FInancial Projections', size=15, weight=ft.FontWeight.W_800),
+                ft.Divider(height=5, color='transparent'),
+                ft.DataTable(
+                    columns=[
+                        ft.DataColumn(ft.Text("Department")),
+                        ft.DataColumn(ft.Text("Budget Allocated (N)"), numeric=True),
+                        ft.DataColumn(ft.Text("Amount Spent"), numeric=True),
+                        ft.DataColumn(ft.Text("Remaining Budget"), numeric=True),
+                        ft.DataColumn(ft.Text("Projection for Next Quarter"), numeric=True),
+                    ],
+                    rows=[
+                        ft.DataRow(
+                            cells=[
+                                ft.DataCell(ft.Text("IT")),
+                                ft.DataCell(ft.Text("50,500,000")),
+                                ft.DataCell(ft.Text("40,320,000")),
+                                ft.DataCell(ft.Text("10,180,000")),
+                                ft.DataCell(ft.Text("45,320,000")),
+                            ],
+                        ),
+                        ft.DataRow(
+                            cells=[
+                                ft.DataCell(ft.Text("Marketing")),
+                                ft.DataCell(ft.Text("30,300,000")),
+                                ft.DataCell(ft.Text("25,250,000")),
+                                ft.DataCell(ft.Text("5,050,000")),
+                                ft.DataCell(ft.Text("28,250,000")),
+                            ],
+                        ),
+                        ft.DataRow(
+                            cells=[
+                                ft.DataCell(ft.Text("Operations")),
+                                ft.DataCell(ft.Text("16,700,000")),
+                                ft.DataCell(ft.Text("15,620,000")),
+                                ft.DataCell(ft.Text("1,080,000")),
+                                ft.DataCell(ft.Text("17,620,000")),
+                            ],
+                        ),
+                    ],
+                ),
+                ft.Divider(height=5, color='transparent'),
                 ft.Text(
                     "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
                     size=15,
                     weight=ft.FontWeight.W_800
                 ),
-                ft.Divider(height=10, color='transparent'),
+                ft.Divider(height=5, color='transparent'),
                 ft.Row(
                     controls=[
                         self.buttonSignUp,
