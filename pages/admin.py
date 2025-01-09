@@ -5,7 +5,7 @@ import pandas as pd
 import datetime, json
 from pages.ultils import update_attendance, DataCipher
 
-class User(ft.UserControl):
+class Admin(ft.UserControl):
     def __init__(self, page, user_data, status):
         super().__init__()
         self.page = page
@@ -17,7 +17,8 @@ class User(ft.UserControl):
             name=ft.icons.IMAGE_OUTLINED,
             scale=ft.Scale(5)
         )
-        self.signout_button_user = ft.Row(
+        
+        self.signout_button_admin = ft.Row(
             controls=[
                 ft.Container(
                     border_radius=5,
@@ -26,7 +27,7 @@ class User(ft.UserControl):
                     gradient=ft.LinearGradient(
                         colors=['#ea580c', '#4f46e5'],
                     ),
-                    content=ft.Text('Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
+                    content=ft.Text('Admin Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
                     padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
                     on_click=self.go_home,
                 )
@@ -34,6 +35,38 @@ class User(ft.UserControl):
             alignment='center',
             vertical_alignment='center'
         )
+
+        self.buttonSignUp = ft.Container(
+            border_radius=5,
+            expand=True,
+            bgcolor='#4f46e5',
+            gradient=ft.LinearGradient(
+                colors=['#ea580c', '#4f46e5'],
+            ),
+            content=ft.Text(
+                'Register New User',
+                color='white',
+                size=18,
+                text_align=ft.TextAlign.CENTER
+            ),
+            padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
+            on_click=self.sign_up,
+        )
+
+        self.download_button = ft.Container(
+            border_radius=5,
+            expand=True,
+            bgcolor='#3b82f6',
+            gradient=ft.LinearGradient(
+                colors=['#bbf7d0', '#86efac', '#3b82f6'],
+            ),
+            content=ft.Text('Download Activity Log', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
+            padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
+            on_click=self.download_activity_log,
+        )
+
+    def sign_up(self, e):
+        self.page.go('/signup')
 
     def load_image(self, path):
         print(f"Loading image from path: {path}")
@@ -97,13 +130,28 @@ class User(ft.UserControl):
                 ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
                 ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
                 ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {plain_fullname}"),
-                ft.Text(f"Email: {plain_email}"),
-                ft.Text(f"Phone: {plain_telephone}"),
+                ft.ListTile(
+                    leading=ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
+                    title=ft.Text(f"Full Name: {plain_fullname}", weight=ft.FontWeight.W_400),
+                    subtitle=ft.Text(f"Email: {plain_email} \n Phone: {plain_telephone}", weight=ft.FontWeight.W_300),
+                ),
                 ft.Divider(height=10, color='transparent'),
-                self.signout_button_user,
+                self.signout_button_admin,
                 ft.Divider(height=10, color='transparent'),
+                ft.Text(
+                    "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
+                    size=15,
+                    weight=ft.FontWeight.W_800
+                ),
+                ft.Divider(height=10, color='transparent'),
+                ft.Row(
+                    controls=[
+                        self.buttonSignUp,
+                        self.download_button
+                    ],
+                    alignment='center',
+                    spacing=20
+                )
             ]
         elif self.status == 'new':
             controls = [
@@ -115,8 +163,22 @@ class User(ft.UserControl):
                 ft.Text(f"Email: {plain_email}"),
                 ft.Text(f"Phone: {plain_telephone}"),
                 ft.Divider(height=10, color='transparent'),
-                self.signout_button_user,
+                self.signout_button_admin,
                 ft.Divider(height=10, color='transparent'),
+                ft.Text(
+                    "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
+                    size=15,
+                    weight=ft.FontWeight.W_800
+                ),
+                ft.Divider(height=10, color='transparent'),
+                ft.Row(
+                    controls=[
+                        self.buttonSignUp,
+                        self.download_button
+                    ],
+                    alignment='center',
+                    spacing=20
+                )
             ]
 
         return ft.Container(
@@ -140,7 +202,7 @@ class User(ft.UserControl):
         email = self.user_data.get('email')
         update_attendance(email=email, action='sign_out')
         self.page.client_storage.remove("session")
-        self.page.go('/admin')
+        self.page.go('/')
 
     def show_snackbar(self, message):
         snackbar = ft.SnackBar(
@@ -150,4 +212,51 @@ class User(ft.UserControl):
         self.page.overlay.append(snackbar)
         snackbar.open = True
         self.page.update()
+
+    def download_activity_log(self, e):
+        """Generate and download the activity log as a CSV file."""
+        try:
+            data_path = 'application_data/application_storage/registered_data.json'
+            # Load activity log from a JSON file
+            if os.path.exists(data_path):
+                with open(data_path, 'r') as f:
+                    activity_data = json.load(f)
+            else:
+                self.show_snackbar('No data present in the activity log for now. Try again later!')
+                return
+
+            # Extract relevant fields from the JSON
+            extracted_data = []
+            for user_data in activity_data:
+                for attendance in user_data.get("attendance_status", []):
+                    fullname = self.data_cipher.decrypt_data(user_data["fullname"])
+                    email = self.data_cipher.decrypt_data(user_data["email"])
+                    telephone = self.data_cipher.decrypt_data(user_data["telephone"])
+                    extracted_data.append({
+                        "fullname": fullname,
+                        "email": email,
+                        "telephone": telephone,
+                        "sign_in_time": attendance["sign_in_time"],
+                        "sign_out_time": attendance["sign_out_time"],
+                        "total_attendance": user_data["total_attendance"],
+                        "last_attendance_time": user_data["last_attendance_time"]
+                    })
+
+            # Convert extracted data to a DataFrame
+            df = pd.DataFrame(extracted_data)
+
+            # Add a timestamped filename
+            filename = f"activity_log_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+            filepath = os.path.join('downloads', filename)
+            os.makedirs('downloads', exist_ok=True)
+
+            # Save the DataFrame to a CSV file
+            df.to_csv(filepath, index=False)
+
+            # Show a success snackbar
+            self.show_snackbar(f"Activity log saved as {filename} in {filepath}")
+        except Exception as ex:
+            # Show an error snackbar
+            self.show_snackbar(f"Error: {str(ex)}")
+
     

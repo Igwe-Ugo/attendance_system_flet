@@ -14,6 +14,8 @@ class SignInPage(ft.UserControl):
         super().__init__()
         self.page = page
         self.camera_manager = camera_manager
+        self.admin_email_1 = 'ugo2000igwe12@gmail.com'
+        self.admin_email_2 = 'paularaegbu@yahoo.com'
         self.file_data_path = 'application_data/application_storage/registered_data.json'
         self.camera = self.camera_manager.get_camera() # Get shared camera instance
         self.face_detector = FaceDetector()
@@ -192,8 +194,10 @@ class SignInPage(ft.UserControl):
                         email = best_match['email']
                         status = 'old'
                         self.page.client_storage.set('status', status)
-                        update_attendance(email=email, action='sign_in')
-                        self.show_user()
+                        if email == self.admin_email_1 or email == self.admin_email_2:
+                            self.show_admin(email=email)
+                        else:
+                            self.show_user(email=email)
                     else:
                         self.show_snackbar("Face not recognized. Please try again.")
             else:
@@ -203,8 +207,16 @@ class SignInPage(ft.UserControl):
         finally:
             self.toggle_loading(False) # hide the loading animation
 
-    def show_user(self):
+    def show_admin(self, email):
         print("Navigating to User page")
         self.running = False  # Stop the thread
         self.camera_manager.release_camera()
+        update_attendance(email=email, action='sign_in')
+        self.page.go('/admin')
+
+    def show_user(self, email):
+        print("Navigating to User page")
+        self.running = False  # Stop the thread
+        self.camera_manager.release_camera()
+        update_attendance(email=email, action='sign_in')
         self.page.go('/user')

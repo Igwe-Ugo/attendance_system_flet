@@ -6,6 +6,7 @@ from pages.register_face import RegisterFace
 from pages.user import User
 from pages.signin import SignInPage
 from pages.ultils import CameraManager
+from pages.admin import Admin
 
 def main(page: ft.Page):
     page.title = "Flet Access Control System"
@@ -81,6 +82,23 @@ def main(page: ft.Page):
                 )
             else:
                 show_snackbar('No User found with this face, please signup! Redirecting to Sign Up...')
+                page.go("/signup")
+        elif page.route.startswith("/admin"):
+            # Extract user data from the route
+            print("Loading User page")
+            user_data = page.client_storage.get("recognized_user_data")
+            status = page.client_storage.get('status')
+            if user_data:
+                page.views.append(
+                    ft.View(
+                        route="/admin",
+                        controls=[
+                            Admin(page=page, status=status, user_data=user_data),
+                        ]
+                    )
+                )
+            else:
+                show_snackbar('No Admin found with this face, please signup! Redirecting to Sign Up...')
                 page.go("/signup")
         elif page.route == "/signin":
             page.views.append(
