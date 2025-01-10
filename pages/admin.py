@@ -1,17 +1,16 @@
 import flet as ft
+import pandas as pd 
 import os, io, base64
-from PIL import Image
-import pandas as pd
 import datetime, json
+from PIL import Image
 from pages.ultils import update_attendance, DataCipher
 
 class Admin(ft.UserControl):
-    def __init__(self, page, user_data, status):
+    def __init__(self, page, user_data):
         super().__init__()
         self.page = page
         self.user_data = user_data
         self.running = True
-        self.status = status
         self.data_cipher = DataCipher()
         self.no_user = ft.Icon(
             name=ft.icons.IMAGE_OUTLINED,
@@ -125,104 +124,76 @@ class Admin(ft.UserControl):
 
         img_data = self.load_image(self.user_data.get('face_image', None) or '')
         
-        if self.status == 'old': 
-            controls = [
-                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
-                ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
-                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.ListTile(
-                    is_three_line=True,
-                    expand=True,
-                    leading=ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-                    title=ft.Text(f"Full Name: {plain_fullname}", weight=ft.FontWeight.W_400),
-                    subtitle=ft.Text(f"Email: {plain_email} \n Phone: {plain_telephone}", weight=ft.FontWeight.W_300),
-                ),
-                ft.Divider(height=5, color='transparent'),
-                self.signout_button_admin,
-                ft.Divider(height=5, color='transparent'),
-                ft.Text('Budget Reports and FInancial Projections', size=15, weight=ft.FontWeight.W_800),
-                ft.Divider(height=5, color='transparent'),
-                ft.DataTable(
-                    columns=[
-                        ft.DataColumn(ft.Text("Department")),
-                        ft.DataColumn(ft.Text("Budget Allocated (N)"), numeric=True),
-                        ft.DataColumn(ft.Text("Amount Spent"), numeric=True),
-                        ft.DataColumn(ft.Text("Remaining Budget"), numeric=True),
-                        ft.DataColumn(ft.Text("Projection for Next Quarter"), numeric=True),
-                    ],
-                    rows=[
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text("IT")),
-                                ft.DataCell(ft.Text("50,500,000")),
-                                ft.DataCell(ft.Text("40,320,000")),
-                                ft.DataCell(ft.Text("10,180,000")),
-                                ft.DataCell(ft.Text("45,320,000")),
-                            ],
-                        ),
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text("Marketing")),
-                                ft.DataCell(ft.Text("30,300,000")),
-                                ft.DataCell(ft.Text("25,250,000")),
-                                ft.DataCell(ft.Text("5,050,000")),
-                                ft.DataCell(ft.Text("28,250,000")),
-                            ],
-                        ),
-                        ft.DataRow(
-                            cells=[
-                                ft.DataCell(ft.Text("Operations")),
-                                ft.DataCell(ft.Text("16,700,000")),
-                                ft.DataCell(ft.Text("15,620,000")),
-                                ft.DataCell(ft.Text("1,080,000")),
-                                ft.DataCell(ft.Text("17,620,000")),
-                            ],
-                        ),
-                    ],
-                ),
-                ft.Divider(height=5, color='transparent'),
-                ft.Text(
-                    "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
-                    size=15,
-                    weight=ft.FontWeight.W_800
-                ),
-                ft.Divider(height=5, color='transparent'),
-                ft.Row(
-                    controls=[
-                        self.buttonSignUp,
-                        self.download_button
-                    ],
-                    alignment='center',
-                    spacing=20
-                )
-            ]
-        elif self.status == 'new':
-            controls = [
-                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
-                ft.Text('Registeration successful!', size=19, weight=ft.FontWeight.W_900),
-                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {plain_fullname}"),
-                ft.Text(f"Email: {plain_email}"),
-                ft.Text(f"Phone: {plain_telephone}"),
-                ft.Divider(height=10, color='transparent'),
-                self.signout_button_admin,
-                ft.Divider(height=10, color='transparent'),
-                ft.Text(
-                    "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
-                    size=15,
-                    weight=ft.FontWeight.W_800
-                ),
-                ft.Divider(height=10, color='transparent'),
-                ft.Row(
-                    controls=[
-                        self.buttonSignUp,
-                        self.download_button
-                    ],
-                    alignment='center',
-                    spacing=20
-                )
-            ]
+        controls = [
+            ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
+            ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
+            ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
+            ft.ListTile(
+                is_three_line=True,
+                expand=True,
+                leading=ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
+                title=ft.Text(f"Full Name: {plain_fullname}", weight=ft.FontWeight.W_400),
+                subtitle=ft.Text(f"Email: {plain_email} \n Phone: {plain_telephone}", weight=ft.FontWeight.W_300),
+            ),
+            ft.Divider(height=5, color='transparent'),
+            self.signout_button_admin,
+            ft.Divider(height=5, color='transparent'),
+            ft.Text('Budget Reports and FInancial Projections', size=15, weight=ft.FontWeight.W_800),
+            ft.Divider(height=5, color='transparent'),
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("Department")),
+                    ft.DataColumn(ft.Text("Budget Allocated (N)"), numeric=True),
+                    ft.DataColumn(ft.Text("Amount Spent"), numeric=True),
+                    ft.DataColumn(ft.Text("Remaining Budget"), numeric=True),
+                    ft.DataColumn(ft.Text("Projection for Next Quarter"), numeric=True),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("IT")),
+                            ft.DataCell(ft.Text("50,500,000")),
+                            ft.DataCell(ft.Text("40,320,000")),
+                            ft.DataCell(ft.Text("10,180,000")),
+                            ft.DataCell(ft.Text("45,320,000")),
+                        ],
+                    ),
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("Marketing")),
+                            ft.DataCell(ft.Text("30,300,000")),
+                            ft.DataCell(ft.Text("25,250,000")),
+                            ft.DataCell(ft.Text("5,050,000")),
+                            ft.DataCell(ft.Text("28,250,000")),
+                        ],
+                    ),
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("Operations")),
+                            ft.DataCell(ft.Text("16,700,000")),
+                            ft.DataCell(ft.Text("15,620,000")),
+                            ft.DataCell(ft.Text("1,080,000")),
+                            ft.DataCell(ft.Text("17,620,000")),
+                        ],
+                    ),
+                ],
+            ),
+            ft.Divider(height=5, color='transparent'),
+            ft.Text(
+                "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
+                size=15,
+                weight=ft.FontWeight.W_800
+            ),
+            ft.Divider(height=5, color='transparent'),
+            ft.Row(
+                controls=[
+                    self.buttonSignUp,
+                    self.download_button
+                ],
+                alignment='center',
+                spacing=20
+            )
+        ]
 
         return ft.Container(
             expand=True,

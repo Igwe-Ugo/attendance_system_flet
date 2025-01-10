@@ -6,12 +6,11 @@ import datetime, json
 from pages.ultils import update_attendance, DataCipher
 
 class User(ft.UserControl):
-    def __init__(self, page, user_data, status):
+    def __init__(self, page, user_data):
         super().__init__()
         self.page = page
         self.user_data = user_data
         self.running = True
-        self.status = status
         self.data_cipher = DataCipher()
         self.no_user = ft.Icon(
             name=ft.icons.IMAGE_OUTLINED,
@@ -92,32 +91,18 @@ class User(ft.UserControl):
 
         img_data = self.load_image(self.user_data.get('face_image', None) or '')
         
-        if self.status == 'old': 
-            controls = [
-                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
-                ft.Text('Face Recognized!', size=19, weight=ft.FontWeight.W_900),
-                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {plain_fullname}"),
-                ft.Text(f"Email: {plain_email}"),
-                ft.Text(f"Phone: {plain_telephone}"),
-                ft.Divider(height=10, color='transparent'),
-                self.signout_button_user,
-                ft.Divider(height=10, color='transparent'),
-            ]
-        elif self.status == 'new':
-            controls = [
-                ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
-                ft.Text('Registeration successful!', size=19, weight=ft.FontWeight.W_900),
-                ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-                ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-                ft.Text(f"Full Name: {plain_fullname}"),
-                ft.Text(f"Email: {plain_email}"),
-                ft.Text(f"Phone: {plain_telephone}"),
-                ft.Divider(height=10, color='transparent'),
-                self.signout_button_user,
-                ft.Divider(height=10, color='transparent'),
-            ]
+        controls = [
+            ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
+            ft.Text('User Recognized!', size=19, weight=ft.FontWeight.W_900),
+            ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
+            ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
+            ft.Text(f"Full Name: {plain_fullname}"),
+            ft.Text(f"Email: {plain_email}"),
+            ft.Text(f"Phone: {plain_telephone}"),
+            ft.Divider(height=10, color='transparent'),
+            self.signout_button_user,
+            ft.Divider(height=10, color='transparent'),
+        ]
 
         return ft.Container(
             expand=True,

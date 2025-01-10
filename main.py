@@ -70,13 +70,12 @@ def main(page: ft.Page):
             # Extract user data from the route
             print("Loading User page")
             user_data = page.client_storage.get("recognized_user_data")
-            status = page.client_storage.get('status')
             if user_data:
                 page.views.append(
                     ft.View(
                         route="/user",
                         controls=[
-                            User(page=page, status=status, user_data=user_data),
+                            User(page=page, user_data=user_data),
                         ]
                     )
                 )
@@ -87,13 +86,12 @@ def main(page: ft.Page):
             # Extract user data from the route
             print("Loading User page")
             user_data = page.client_storage.get("recognized_user_data")
-            status = page.client_storage.get('status')
             if user_data:
                 page.views.append(
                     ft.View(
                         route="/admin",
                         controls=[
-                            Admin(page=page, status=status, user_data=user_data),
+                            Admin(page=page, user_data=user_data),
                         ]
                     )
                 )
