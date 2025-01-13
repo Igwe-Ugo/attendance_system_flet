@@ -11,8 +11,6 @@ class LandingPage(ft.UserControl):
             name='lock',
             scale=ft.Scale(5)
         )
-
-        # define button to route to signup or signin screen
         
         self.buttonSignIn = ft.Container(
             border_radius=5,
@@ -61,7 +59,7 @@ class LandingPage(ft.UserControl):
                         ),
                         ft.Text(
                             "The resource you are about to access is protected and accessible only to authorized users. Attempting to access this page without proper authorization is prohibited. All activities are monitored and logged.",
-                            size=18,
+                            size=20,
                             text_align='center',
                             weight=ft.FontWeight.W_800
                         ),
@@ -71,7 +69,7 @@ class LandingPage(ft.UserControl):
                         ),
                         ft.Text(
                             'If your are an authorized user, then sign in here. Ensure you log out after your session to protect your information.',
-                            size=18,
+                            size=20,
                             text_align='center',
                             weight=ft.FontWeight.W_500
                         ),

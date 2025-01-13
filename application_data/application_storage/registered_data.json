@@ -5,7 +5,7 @@
         "telephone": "gAAAAABnfmMaewEog8JiH0fee_AH4Fbvyj0VbR3GHvWBEKbYcuaBgFSNnL7ajTaSLk0EQ_yFOvIizZQrR8Rm_-FnzeUuKYpTsA==",
         "face_image": "application_data/user_faces/ugo2000igwe12@gmail.com.jpg",
         "face_encoding": "application_data/user_faces_encoding/ugo2000igwe12@gmail.com_encoding.npy",
-        "total_attendance": 15,
+        "total_attendance": 21,
         "attendance_status": [
             {
                 "sign_in_time": "08-01-2025 12:35:54",
@@ -42,8 +42,32 @@
             {
                 "sign_in_time": "08-01-2025 15:52:14",
                 "sign_out_time": "08-01-2025 15:52:26"
+            },
+            {
+                "sign_in_time": "12-01-2025 23:12:50",
+                "sign_out_time": "12-01-2025 23:13:00"
+            },
+            {
+                "sign_in_time": "12-01-2025 23:15:42",
+                "sign_out_time": "12-01-2025 23:15:48"
+            },
+            {
+                "sign_in_time": "13-01-2025 11:15:43",
+                "sign_out_time": "13-01-2025 11:16:19"
+            },
+            {
+                "sign_in_time": "13-01-2025 11:21:23",
+                "sign_out_time": "13-01-2025 11:21:44"
+            },
+            {
+                "sign_in_time": "13-01-2025 11:25:03",
+                "sign_out_time": "13-01-2025 11:25:09"
+            },
+            {
+                "sign_in_time": "13-01-2025 12:42:19",
+                "sign_out_time": "13-01-2025 12:42:22"
             }
         ],
-        "last_attendance_time": "08-01-2025 15:52:26"
+        "last_attendance_time": "13-01-2025 12:42:22"
     }
 ]

@@ -191,9 +191,12 @@ class SignInPage(ft.UserControl):
                     if best_similarity >= threshold:
                         self.show_snackbar(f"Welcome back, {fullname}!")
                         self.page.client_storage.set("recognized_user_data", best_match)
-                        email = best_match['email']
+                        email = self.data_cipher.decrypt_data(best_match['email'])
                         status = 'old'
                         self.page.client_storage.set('status', status)
+                        print(f"Best match email: {email}")
+                        print(f"Admin Email 1: {self.admin_email_1}")
+                        print(f"Admin Email 2: {self.admin_email_2}")
                         if email == self.admin_email_1 or email == self.admin_email_2:
                             self.show_admin(email=email)
                         else:

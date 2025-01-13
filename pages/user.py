@@ -1,8 +1,6 @@
 import flet as ft
 import os, io, base64
 from PIL import Image
-import pandas as pd
-import datetime, json
 from pages.ultils import update_attendance, DataCipher
 
 class User(ft.UserControl):
@@ -39,7 +37,7 @@ class User(ft.UserControl):
         if os.path.exists(path):
             try:
                 with Image.open(path) as img:
-                    img = img.resize((250, 250))  # Resize image for display
+                    img = img.resize((100, 100))  # Resize image for display
                     buffered = io.BytesIO()
                     img.save(buffered, format='PNG')
                     return base64.b64encode(buffered.getvalue()).decode()
@@ -95,13 +93,64 @@ class User(ft.UserControl):
             ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
             ft.Text('User Recognized!', size=19, weight=ft.FontWeight.W_900),
             ft.Text('Below are the credentials of the user', size=18, weight=ft.FontWeight.W_800),
-            ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
-            ft.Text(f"Full Name: {plain_fullname}"),
-            ft.Text(f"Email: {plain_email}"),
-            ft.Text(f"Phone: {plain_telephone}"),
+            ft.Row(
+                spacing=20,
+                controls=[
+                    ft.Image(src_base64=img_data, border_radius=10) if img_data else ft.Text('No Image available'),
+                    ft.Column(
+                        spacing=5,
+                        controls=[
+                            ft.Text(f"Full Name: {plain_fullname}", size=20, weight=ft.FontWeight.W_900),
+                            ft.Text(f"Email Address: {plain_email}", size=20, weight=ft.FontWeight.W_900),
+                            ft.Text(f"Phone Number: {plain_telephone}", size=20, weight=ft.FontWeight.W_900),
+                        ]
+                    ),
+                ]
+            ),
             ft.Divider(height=10, color='transparent'),
+            ft.Text('Budget Reports and Financial Projections', size=15, weight=ft.FontWeight.W_800),
+            ft.Divider(height=10, color='transparent'),
+            ft.DataTable(
+                columns=[
+                    ft.DataColumn(ft.Text("Department")),
+                    ft.DataColumn(ft.Text("Budget Allocated (N)"), numeric=True),
+                    ft.DataColumn(ft.Text("Amount Spent"), numeric=True),
+                    ft.DataColumn(ft.Text("Remaining Budget"), numeric=True),
+                    ft.DataColumn(ft.Text("Projection for Next Quarter"), numeric=True),
+                ],
+                rows=[
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("IT")),
+                            ft.DataCell(ft.Text("50,500,000")),
+                            ft.DataCell(ft.Text("40,320,000")),
+                            ft.DataCell(ft.Text("10,180,000")),
+                            ft.DataCell(ft.Text("45,320,000")),
+                        ],
+                    ),
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("Marketing")),
+                            ft.DataCell(ft.Text("30,300,000")),
+                            ft.DataCell(ft.Text("25,250,000")),
+                            ft.DataCell(ft.Text("5,050,000")),
+                            ft.DataCell(ft.Text("28,250,000")),
+                        ],
+                    ),
+                    ft.DataRow(
+                        cells=[
+                            ft.DataCell(ft.Text("Operations")),
+                            ft.DataCell(ft.Text("16,700,000")),
+                            ft.DataCell(ft.Text("15,620,000")),
+                            ft.DataCell(ft.Text("1,080,000")),
+                            ft.DataCell(ft.Text("17,620,000")),
+                        ],
+                    ),
+                ],
+            ),
+            ft.Divider(height=5, color='transparent'),
             self.signout_button_user,
-            ft.Divider(height=10, color='transparent'),
+            ft.Divider(height=5, color='transparent'),
         ]
 
         return ft.Container(

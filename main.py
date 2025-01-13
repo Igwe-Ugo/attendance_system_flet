@@ -38,7 +38,7 @@ def main(page: ft.Page):
                                 icon=ft.icons.ARROW_BACK_IOS,
                                 icon_size=20,
                                 tooltip='Back',
-                                on_click=lambda _: page.go("/user")
+                                on_click=lambda _: page.go("/admin")
                             ),
                             title=ft.Text("Sign Up"),
                             bgcolor=ft.colors.SURFACE_VARIANT
