@@ -57,7 +57,7 @@ def main(page: ft.Page):
                                 icon=ft.icons.ARROW_BACK_IOS,
                                 icon_size=20,
                                 tooltip='Back to Sign Up Page',
-                                on_click=lambda _: disable_cam(route="/")
+                                on_click=lambda _: disable_cam(route="/signup")
                             ),
                             title=ft.Text("Register face"),
                             bgcolor=ft.colors.SURFACE_VARIANT
@@ -69,7 +69,7 @@ def main(page: ft.Page):
         elif page.route.startswith("/user"):
             # Extract user data from the route
             print("Loading User page")
-            user_data = page.client_storage.get("recognized_user_data")
+            user_data = page.client_storage.get("user_data")
             if user_data:
                 page.views.append(
                     ft.View(
@@ -85,7 +85,7 @@ def main(page: ft.Page):
         elif page.route.startswith("/admin"):
             # Extract user data from the route
             print("Loading User page")
-            user_data = page.client_storage.get("recognized_user_data")
+            user_data = page.client_storage.get("admin_data")
             if user_data:
                 page.views.append(
                     ft.View(

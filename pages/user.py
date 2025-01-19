@@ -19,13 +19,13 @@ class User(ft.UserControl):
                 ft.Container(
                     border_radius=5,
                     expand=True,
-                    bgcolor='#4f46e5',
+                    bgcolor='#b4d4fb',
                     gradient=ft.LinearGradient(
-                        colors=['#ea580c', '#4f46e5'],
+                        colors=['#b4d4fb', '#848484', '#0f8389'],
                     ),
                     content=ft.Text('Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
                     padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
-                    on_click=self.go_home,
+                    on_click=self.logout_user,
                 )
             ],
             alignment='center',
@@ -108,8 +108,12 @@ class User(ft.UserControl):
                 ]
             ),
             ft.Divider(height=10, color='transparent'),
-            ft.Text('Budget Reports and Financial Projections', size=15, weight=ft.FontWeight.W_800),
+            self.signout_button_user,
             ft.Divider(height=10, color='transparent'),
+            ft.Text('BUDGET REPORTS AND FINANCIAL PROJECTIONS', size=17, weight=ft.FontWeight.W_800),
+            ft.Divider(height=10, color='transparent'),
+            ft.Text('THIS IS A SAMPLE RESTRICTED PAGE, ONLY FOR THE PURPOSE OF ILLUSTRATION. THE TABLE BELOW DOES NOT REPRESENT ANY REAL INFORMATION OF ANY CORPORATE ENTITY. ', size=16, weight=ft.FontWeight.W_800),
+            ft.Divider(height=15, color='transparent'),
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("Department")),
@@ -148,9 +152,7 @@ class User(ft.UserControl):
                     ),
                 ],
             ),
-            ft.Divider(height=5, color='transparent'),
-            self.signout_button_user,
-            ft.Divider(height=5, color='transparent'),
+            ft.Divider(height=10, color='transparent'),
         ]
 
         return ft.Container(
@@ -170,11 +172,23 @@ class User(ft.UserControl):
     def on_scroll(self, event):
         print(f"Scrolled to offset: {event.pixels}")
 
-    def go_home(self, e):
+    def logout_user(self, e):
         email = self.user_data.get('email')
         update_attendance(email=email, action='sign_out')
-        self.page.client_storage.remove("session")
-        self.page.go('/admin')
+
+        # Retrieve the registered_by_admin flag
+        registered_by_admin = self.page.client_storage.get("registered_by_admin")
+
+        # Navigate based on the flag
+        if registered_by_admin:
+            self.page.go('/admin')  # Return to admin page
+        else:
+            self.page.go('/')  # Return to landing page
+
+        # Clear user-related storage after navigation
+        self.page.client_storage.remove('user_data')
+        self.page.client_storage.remove('registered_by_admin')
+
 
     def show_snackbar(self, message):
         snackbar = ft.SnackBar(

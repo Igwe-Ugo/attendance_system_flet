@@ -2,43 +2,67 @@ import numpy as np
 import cv2, os, json
 import mediapipe as mp
 import tensorflow as tf
+import face_recognition
 from datetime import datetime as dt
 from cryptography.fernet import Fernet
 
-def triplet_loss(y_true, y_pred, alpha=0.2):
-    batch_size = tf.shape(y_pred)[0] // 3
-    anchor = y_pred[:batch_size]
-    positive = y_pred[batch_size:2 * batch_size]
-    negative = y_pred[2 * batch_size:]
+class FaceRecognitionFunctions:
+    def __init__(self):
+        pass
 
-    pos_dist = tf.reduce_sum(tf.square(anchor - positive), axis=-1)
-    neg_dist = tf.reduce_sum(tf.square(anchor - negative), axis=-1)
-    loss = tf.reduce_mean(tf.maximum(pos_dist - neg_dist + alpha, 0))
-    return loss
+    def get_face_encoding(self, image):
+        """
+        Get face encoding from an image using face_recognition library.
+        
+        Args:
+            image: Input image (numpy array).
+        
+        Returns:
+            Face encoding (128-d vector) or None if no face is detected.
+        """
+        try:
+            # Convert to RGB
+            rgb_image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # Detect face locations
+            face_locations = face_recognition.face_locations(rgb_image, model='hog')
+            if face_locations:
+                # Get face encodings
+                face_encodings = face_recognition.face_encodings(rgb_image, face_locations)
+                if face_encodings:
+                    return face_encodings[0]
+            return None
+        except Exception as e:
+            print(f"Error in get_face_encoding: {e}")
+            return None
 
-# Load the pre-trained model for facial embeddings
-model_path = 'face_recog_vggface.keras' # Please specify where this file path is in correctly for it to load.
-model = tf.keras.models.load_model(model_path, custom_objects={'triplet_loss': triplet_loss})
+    @staticmethod
+    def compare_faces(known_encoding, unknown_encoding, tolerance=0.4):
+        """
+        Compare two face encodings and return similarity score and match status.
+        
+        Args:
+            known_encoding: Known face encoding (128-d vector).
+            unknown_encoding: Unknown face encoding (128-d vector).
+            tolerance: Similarity threshold for match (default 0.3).
+        
+        Returns:
+            similarity (float): Similarity score between 0 and 1.
+            is_match (bool): True if similarity >= tolerance.
+        """
+        if known_encoding is None or unknown_encoding is None:
+            return 0.0, False
+        try:
+            # Calculate face distance
+            face_distance = face_recognition.face_distance([known_encoding], unknown_encoding)[0]
+            # Convert to similarity score
+            similarity = 1 - face_distance
+            # Determine match status
+            is_match = similarity >= tolerance
+            return similarity, is_match
+        except Exception as e:
+            print(f"Error in compare_faces: {e}")
+            return 0.0, False
 
-def calculate_embedding(face_image):
-    """Preprocess face and calculate embeddings."""
-
-    if face_image is None or not isinstance(face_image, np.ndarray):
-        raise ValueError("Invalid input: face_image must be a valid numpy array.")
-    
-    if face_image.size == 0:
-        raise ValueError("Invalid input: face_image is empty.")
-    
-    face_image = cv2.resize(face_image, (224, 224))  # Resize to model input size
-    face_image = face_image / 255.0  # Normalize
-    face_image = np.expand_dims(face_image, axis=0)  # Add batch dimension
-    return model.predict(face_image)[0]  # Get the embedding
-
-def compute_similarity(known_embedding, unknown_embedding):
-    """Compute similarity between two face embeddings."""
-    return np.dot(known_embedding, unknown_embedding) / (
-        np.linalg.norm(known_embedding) * np.linalg.norm(unknown_embedding)
-    )
 
 class FaceDetector:
     def __init__(self):
@@ -69,6 +93,9 @@ class FaceDetector:
         return None
 
 class CameraManager:
+    '''
+    Responsible for all camera functions and inputs...
+    '''
     def __init__(self):
         self.camera = None
 
@@ -100,7 +127,9 @@ def center_crop_frame(frame, size=400):
     return cropped
 
 def update_attendance(email, action):
-    # Load existing data or create a new file
+    '''
+        Function responsible for taking attendance in this system.
+    '''
     file_path = 'application_data/application_storage/registered_data.json'
     if os.path.exists(file_path):
         with open(file_path, 'r') as f:
@@ -112,7 +141,13 @@ def update_attendance(email, action):
     # Find the user by email
     user_found = False
     for user in all_users:
-        if user['email'] == email:
+        # Decrypt and normalize the stored email
+        stored_email = DataCipher().decrypt_data(user['email']).strip().lower()
+        input_email = email.strip().lower()  # Normalize input email
+        print(f"Encrypted Email in JSON: {user['email']}")
+        print(f"Decrypted Email for Comparison: '{stored_email}'")
+        print(f"Input Email for Comparison: '{input_email}'")
+        if stored_email == input_email:
             user_found = True
             if 'attendance_status' not in user:
                 user['attendance_status'] = []
@@ -188,5 +223,6 @@ class DataCipher:
         return self.cipher.encrypt(data.encode()).decode()
     
     def decrypt_data(self, data: str) -> str:
-        '''Encrypt a string'''
+        '''Decrypt a string'''
         return self.cipher.decrypt(data.encode()).decode()
+    

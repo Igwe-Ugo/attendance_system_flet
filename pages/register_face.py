@@ -3,7 +3,7 @@ import numpy as np
 import cvzone
 import os, cv2, json, base64, threading, time
 from datetime import datetime as dt
-from pages.ultils import FaceDetector, calculate_embedding, center_crop_frame, update_attendance, DataCipher
+from pages.ultils import FaceDetector, FaceRecognitionFunctions, center_crop_frame, update_attendance, DataCipher
 
 class RegisterFace(ft.UserControl):
     def __init__(self, page, camera_manager):
@@ -13,6 +13,8 @@ class RegisterFace(ft.UserControl):
         self.face_detector = FaceDetector()
         self.data_cipher = DataCipher()
         self.camera_manager = camera_manager
+        self.admin_email_1 = 'ugo2000igwe12@gmail.com'
+        self.admin_email_2 = 'aruegbepaul@gmail.com'
         self.camera = self.camera_manager.get_camera()
         self.img = ft.Image(
             border_radius=ft.border_radius.all(20),
@@ -143,23 +145,10 @@ class RegisterFace(ft.UserControl):
                 self.toggle_loading(False)
                 self.show_snackbar("No face detected. Please position your face properly.")
                 return
-            
-            # Crop the face using the bounding box
-            x, y, width, height = face_location
-            cropped_face = frame[y:y+height, x:x+width]
-
-            # Validate cropped face
-            if cropped_face is None or cropped_face.size == 0:
-                self.show_snackbar("Unable to crop the face. Please try again.")
-                return
 
             # Get face encoding                        
             try:
-                face_encoding = calculate_embedding(cropped_face)
-                if face_encoding is None:
-                    self.toggle_loading(False)
-                    self.show_snackbar("Unable to process face. Please try again.")
-                    return
+                face_encoding = FaceRecognitionFunctions.get_face_encoding(self, frame)
             except ValueError as e:
                 self.show_snackbar(str(e))
                 return
@@ -168,8 +157,9 @@ class RegisterFace(ft.UserControl):
             fullname = self.page.client_storage.get("fullname")
             email = self.page.client_storage.get("email")
             telephone = self.page.client_storage.get("telephone")
+            user_role = self.page.client_storage.get("user_role")
 
-            if not all([fullname, email, telephone]):
+            if not all([fullname, email, telephone, user_role]):
                 self.show_snackbar("User data not found. Please sign up again.")
                 self.page.go('/signup')
                 return
@@ -201,6 +191,7 @@ class RegisterFace(ft.UserControl):
                 "fullname": fullname_encrypted,
                 "email": email_encrypted,
                 "telephone": telephone_encrypted,
+                'user_role': user_role,
                 "face_image": image_path,
                 "face_encoding": encoding_path,
                 'total_attendance': 0,
@@ -225,14 +216,33 @@ class RegisterFace(ft.UserControl):
             with open(register_data, 'w') as f:
                 json.dump(all_users, f, indent=4)
             
-            self.page.client_storage.set("recognized_user_data", user_data)
-            update_attendance(email=email_encrypted, action='sign_in')
-            self.camera_manager.release_camera()
-            self.show_snackbar('User registered successfully!')
-            self.page.go('/user')
+            email_decrypt = self.data_cipher.decrypt_data(email_encrypted).strip().lower()
+            self.page.client_storage.set("registered_by_admin", True)
+            if user_role == 'Administrator':
+                self.page.client_storage.set("admin_data", user_data)
+                self.show_admin(email=email_decrypt)
+            else:
+                self.page.client_storage.set("user_data", user_data)
+                self.show_user(email=email_decrypt)
 
         except Exception as e:
             self.show_snackbar(f"An error occurred while processing the image. Please try again. {e}")
             print(f'{e}')
         finally:
             self.toggle_loading(False) # hide loading animation
+
+    def show_admin(self, email):
+        print("Navigating to User page")
+        self.running = False  # Stop the thread
+        self.camera_manager.release_camera()
+        update_attendance(email=email, action='sign_in')
+        self.show_snackbar('User registered successfully!')
+        self.page.go('/admin')
+
+    def show_user(self, email):
+        print("Navigating to User page")
+        self.running = False  # Stop the thread
+        self.camera_manager.release_camera()
+        update_attendance(email=email, action='sign_in')
+        self.show_snackbar('User registered successfully!')
+        self.page.go('/user')

@@ -16,7 +16,7 @@ link_style = {
     )
 }
 
-phone_regex = r"^\+?[1-9]\d{0,2}[-.\s]?(\(\d{1,4}\)|\d{1,4})[-.\s]?\d{1,4}[-.\s]?\d{1,9}$"
+phone_regex = r'^(\+234|0)\d{10}$'
 regexEmail = r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+"
 
 class SignUpPage(ft.UserControl):
@@ -60,6 +60,9 @@ class SignUpPage(ft.UserControl):
             on_click=self.check_signup_fields,
         )
 
+        self.is_admin = ft.Checkbox(label="Administrator", value=False),
+        self.is_user = ft.Checkbox(label="Regular User", value=False),
+
         # using expanded and row to make the button span the full page width
         self.register_button_row = ft.Row(
             controls=[
@@ -99,6 +102,15 @@ class SignUpPage(ft.UserControl):
                                     height=50,
                                     color='transparent'
                                 ),
+                                ft.Text('Please select a role for this user!', size=18, text_align='center', weight=ft.FontWeight.BOLD),
+                                ft.Divider(height=20, color='transparent'),
+                                ft.Row(
+                                    alignment=ft.MainAxisAlignment.CENTER,
+                                    controls=[
+                                        self.is_user,
+                                        self.is_admin
+                                    ]
+                                ),
                                 self.register_button_row
                             ]
                         )
@@ -125,6 +137,8 @@ class SignUpPage(ft.UserControl):
         fullname = self.fullname.value
         email_address = self.email_address.value
         telephone = self.telephone.value
+        admin_selected = self.is_admin.value
+        user_selected = self.is_user.value
 
         # Check if all fields are filled
         if not (fullname and email_address and telephone):
@@ -140,6 +154,14 @@ class SignUpPage(ft.UserControl):
         if not re.match(phone_regex, telephone):
             self.show_snackbar('Invalid phone number. Please ensure it follows the correct format.')
             return
+        
+        if not admin_selected and not user_selected:
+            self.show_snackbar("You must select either an Admin or Regular User!")
+            return
+        
+        if admin_selected and user_selected:
+            self.show_snackbar("You cannot select both Admin and Regular User!")
+            return
 
         # Check if the email or phone number is already registered
         data_path = 'application_data/application_storage/registered_data.json'
@@ -150,23 +172,25 @@ class SignUpPage(ft.UserControl):
 
                 # Check for duplicates
                 for user in registered_users:
-                    fullname = self.data_cipher.decrypt_data(user["fullname"])
-                    email = self.data_cipher.decrypt_data(user["email"])
-                    telephone = self.data_cipher.decrypt_data(user["telephone"])
-                    if email == email_address:
+                    email_cipher = self.data_cipher.decrypt_data(user["email"])
+                    telephone_cipher = self.data_cipher.decrypt_data(user["telephone"])
+                    if email_cipher == email_address:
                         self.show_snackbar("Email address has already been used. Please try with another email.")
                         return
-                    if telephone == telephone:
+                    if telephone_cipher == telephone:
                         self.show_snackbar("Phone number has already been used. Please try with another number.")
                         return
             except (FileNotFoundError, json.JSONDecodeError) as ex:
                 self.show_snackbar(f"Error checking registration file: {str(ex)}")
                 return
+            
+        user_role = 'Administrator' if admin_selected else 'Regular User'
 
         # Store user credentials in client_storage
         self.page.client_storage.set("fullname", fullname)
         self.page.client_storage.set("email", email_address)
         self.page.client_storage.set("telephone", telephone)
+        self.page.client_storage.set("user_role", user_role)
 
         # Proceed to the next page
         self.page.go('/register_face')

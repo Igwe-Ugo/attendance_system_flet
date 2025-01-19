@@ -3,9 +3,10 @@
         "fullname": "gAAAAABnfmMapDeBrwlpm-3P0nuPYCleKoMnMNW8XVhRSI_P4sDffes5Te5dMsb1DsTpyFMmv1eSfvJiBT6VbWR3EdPjgRlI7WQ0TaRkJurOFKXECiGj6CE=",
         "email": "gAAAAABnfmMacyTtLnQgqnfB1mQ3rnE6ENreTR4yPMa-A13aRqW54u0UyTxe4HqmGEECrKrNoWQ2y1vgEZXnfEl2iFEjtlPLcNEHAFEcLGZyUC8rMsEBi4A=",
         "telephone": "gAAAAABnfmMaewEog8JiH0fee_AH4Fbvyj0VbR3GHvWBEKbYcuaBgFSNnL7ajTaSLk0EQ_yFOvIizZQrR8Rm_-FnzeUuKYpTsA==",
+        "user_role": "Administrator",
         "face_image": "application_data/user_faces/ugo2000igwe12@gmail.com.jpg",
         "face_encoding": "application_data/user_faces_encoding/ugo2000igwe12@gmail.com_encoding.npy",
-        "total_attendance": 21,
+        "total_attendance": 10,
         "attendance_status": [
             {
                 "sign_in_time": "08-01-2025 12:35:54",
@@ -16,58 +17,70 @@
                 "sign_out_time": "08-01-2025 13:25:13"
             },
             {
-                "sign_in_time": "08-01-2025 13:42:21",
-                "sign_out_time": "08-01-2025 13:42:36"
-            },
-            {
-                "sign_in_time": "08-01-2025 13:51:05",
-                "sign_out_time": "08-01-2025 13:52:16"
-            },
-            {
-                "sign_in_time": "08-01-2025 14:18:33",
-                "sign_out_time": "08-01-2025 14:19:01"
-            },
-            {
-                "sign_in_time": "08-01-2025 14:31:34",
-                "sign_out_time": "08-01-2025 14:32:10"
-            },
-            {
-                "sign_in_time": "08-01-2025 14:40:22",
-                "sign_out_time": "08-01-2025 14:40:49"
-            },
-            {
-                "sign_in_time": "08-01-2025 15:38:01",
-                "sign_out_time": "08-01-2025 15:38:12"
-            },
-            {
-                "sign_in_time": "08-01-2025 15:52:14",
-                "sign_out_time": "08-01-2025 15:52:26"
-            },
-            {
-                "sign_in_time": "12-01-2025 23:12:50",
-                "sign_out_time": "12-01-2025 23:13:00"
-            },
-            {
-                "sign_in_time": "12-01-2025 23:15:42",
-                "sign_out_time": "12-01-2025 23:15:48"
-            },
-            {
-                "sign_in_time": "13-01-2025 11:15:43",
-                "sign_out_time": "13-01-2025 11:16:19"
-            },
-            {
-                "sign_in_time": "13-01-2025 11:21:23",
-                "sign_out_time": "13-01-2025 11:21:44"
-            },
-            {
-                "sign_in_time": "13-01-2025 11:25:03",
-                "sign_out_time": "13-01-2025 11:25:09"
-            },
-            {
                 "sign_in_time": "13-01-2025 12:42:19",
                 "sign_out_time": "13-01-2025 12:42:22"
+            },
+            {
+                "sign_in_time": "19-01-2025 17:13:58",
+                "sign_out_time": "19-01-2025 17:14:19"
+            },
+            {
+                "sign_in_time": "19-01-2025 17:35:33",
+                "sign_out_time": "19-01-2025 17:36:35"
+            },
+            {
+                "sign_in_time": "19-01-2025 19:53:18",
+                "sign_out_time": "19-01-2025 19:53:47"
+            },
+            {
+                "sign_in_time": "19-01-2025 20:35:59",
+                "sign_out_time": "19-01-2025 20:36:59"
+            },
+            {
+                "sign_in_time": "19-01-2025 20:43:05",
+                "sign_out_time": "19-01-2025 20:43:16"
+            },
+            {
+                "sign_in_time": "19-01-2025 20:43:48",
+                "sign_out_time": "19-01-2025 20:44:07"
+            },
+            {
+                "sign_in_time": "19-01-2025 22:24:57",
+                "sign_out_time": ""
             }
         ],
-        "last_attendance_time": "13-01-2025 12:42:22"
+        "last_attendance_time": "19-01-2025 20:44:07"
+    },
+    {
+        "fullname": "gAAAAABnhYlnaFcfmdgJa7VEs8nDMRPVCg19B4p0hi5J9GtiQZTD-NESDqe93HbztXsq8Gnos74HXX7LfvuY5Ufxk0SI_IXY0rrhefVncTDhaI35tuG7kZc=",
+        "email": "gAAAAABnhYlnZY9iEHxtBCxnhazW_9bTzQmp5SFJ8IKwpHDqgUBCpEXpbmDE1Qz93ONk-A-8uQg2LaVafIIByAaYUFFHlwzXK0q8ueD5UWp3yztr1NlF1nk=",
+        "telephone": "gAAAAABnhYlnO7E6Enm-1B0LDU0QFTfMZzaaG5BvKLHP7VLvuYXA90xhAa0jMxxBAoOfwdIi2GHT5CisbcEBSeiICXRmlN_hNw==",
+        "user_role": "Administrator",
+        "face_image": "application_data/user_faces/aruegbepaul@gmail.com.jpeg",
+        "face_encoding": "application_data/user_faces_encoding/aruegbepaul@gmail.com_encoding.npy",
+        "total_attendance": 1,
+        "attendance_status": [
+            {
+                "sign_in_time": "13-01-2025 22:42:19",
+                "sign_out_time": "13-01-2025 22:45:11"
+            }
+        ],
+        "last_attendance_time": "13-01-2025 22:45:11"
+    },
+    {
+        "fullname": "gAAAAABnjSv2z88MD2q49cToVY1HZN1Ue_n6oU8wi0xlhsK2ckwVbcURtu10RQBXAUWi4MyCpQ3lqBG6k82fmnAdO9LVNniSwG5uCw-fkFLeWh6VohJKxew=",
+        "email": "gAAAAABnjSv2g_b2EwVWLDHfQDTpuKe4tdOZBvIYKD_1zDG1_mbyKDBlzJ1gmm0HdsPLMg6DSmpBFuPPjWDPvd90OsJd4WIC3gszIB27aIb7U__uEmHicUM=",
+        "telephone": "gAAAAABnjSv2jIWVSR91H-Ld7uOwSsUzF05Tum345sdGJJXrnu78CWIyE0YCOUEE4E4d9hh4DviD-mTAvc99su-JJ_PKtTsi8A==",
+        "user_role": "Regular User",
+        "face_image": "application_data/user_faces/igwennenna891@gmail.com.jpg",
+        "face_encoding": "application_data/user_faces_encoding/igwennenna891@gmail.com_encoding.npy",
+        "total_attendance": 1,
+        "attendance_status": [
+            {
+                "sign_in_time": "19-01-2025 17:44:38",
+                "sign_out_time": "19-01-2025 17:45:55"
+            }
+        ],
+        "last_attendance_time": "19-01-2025 17:45:55"
     }
 ]

@@ -22,13 +22,13 @@ class Admin(ft.UserControl):
                 ft.Container(
                     border_radius=5,
                     expand=True,
-                    bgcolor='#4f46e5',
+                    bgcolor='#b4d4fb',
                     gradient=ft.LinearGradient(
-                        colors=['#ea580c', '#4f46e5'],
+                        colors=['#b4d4fb', '#848484', '#0f8389'],
                     ),
                     content=ft.Text('Admin Sign out', text_align=ft.TextAlign.CENTER, size=18, color=ft.colors.WHITE),
                     padding=ft.padding.only(left=25, right=25, top=20, bottom=20),
-                    on_click=self.go_home,
+                    on_click=self.admin_logout,
                 )
             ],
             alignment='center',
@@ -97,7 +97,7 @@ class Admin(ft.UserControl):
                                 tooltip='Back to Landing Page',
                                 on_click=lambda _: self.page.go("/sign_up")
                             ),
-                            title=ft.Text("No User data found!"),
+                            title=ft.Text("No Admin data found!"),
                             bgcolor=ft.colors.SURFACE_VARIANT
                         ),
                     ft.Column(
@@ -105,7 +105,7 @@ class Admin(ft.UserControl):
                             ft.Divider(height=120, color='transparent'),
                             self.no_user,
                             ft.Divider(height=70, color='transparent'),
-                            ft.Text('No User found with this face, please signup!', size=18, weight=ft.FontWeight.W_800),
+                            ft.Text('No Admin found with this face, please signup!', size=18, weight=ft.FontWeight.W_800),
                         ],
                         horizontal_alignment=ft.MainAxisAlignment.CENTER,
                         spacing=10
@@ -145,8 +145,25 @@ class Admin(ft.UserControl):
             ft.Divider(height=10, color='transparent'),
             self.signout_button_admin,
             ft.Divider(height=10, color='transparent'),
-            ft.Text('Budget Reports and Financial Projections', size=15, weight=ft.FontWeight.W_800),
+            ft.Text(
+                "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
+                size=15,
+                weight=ft.FontWeight.W_800
+            ),
             ft.Divider(height=10, color='transparent'),
+            ft.Row(
+                controls=[
+                    self.buttonSignUp,
+                    self.download_button
+                ],
+                alignment='center',
+                spacing=20
+            ),
+            ft.Divider(height=10, color='transparent'),
+            ft.Text('BUDGET REPORTS AND FINANCIAL PROJECTIONS', size=17, weight=ft.FontWeight.W_800),
+            ft.Divider(height=10, color='transparent'),
+            ft.Text('THIS IS A SAMPLE RESTRICTED PAGE, ONLY FOR THE PURPOSE OF ILLUSTRATION. THE TABLE BELOW DOES NOT REPRESENT ANY REAL INFORMATION OF ANY CORPORATE ENTITY. ', size=16, weight=ft.FontWeight.W_800),
+            ft.Divider(height=15, color='transparent'),
             ft.DataTable(
                 columns=[
                     ft.DataColumn(ft.Text("Department")),
@@ -185,21 +202,6 @@ class Admin(ft.UserControl):
                     ),
                 ],
             ),
-            ft.Divider(height=10, color='transparent'),
-            ft.Text(
-                "System admin should ensure that user is properly cleared by the authorized personnel before being registered. If cleared to register, then click the signup link below and register new user.",
-                size=15,
-                weight=ft.FontWeight.W_800
-            ),
-            ft.Divider(height=10, color='transparent'),
-            ft.Row(
-                controls=[
-                    self.buttonSignUp,
-                    self.download_button
-                ],
-                alignment='center',
-                spacing=20
-            )
         ]
 
         return ft.Container(
@@ -219,11 +221,11 @@ class Admin(ft.UserControl):
     def on_scroll(self, event):
         print(f"Scrolled to offset: {event.pixels}")
 
-    def go_home(self, e):
-        email = self.user_data.get('email')
+    def admin_logout(self, e):
+        email = self.data_cipher.decrypt_data(self.user_data.get('email'))
         update_attendance(email=email, action='sign_out')
-        self.page.client_storage.remove("session")
         self.page.go('/')
+        self.page.client_storage.remove('admin_data')
 
     def show_snackbar(self, message):
         snackbar = ft.SnackBar(

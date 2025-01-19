@@ -1,2 +1,3 @@
 face_recog_vggface.keras
 pages/__pycache__
+error_log.log

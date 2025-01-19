@@ -1,12 +1,12 @@
-import flet as ft
-import cv2, cvzone
-import threading
+import json
 import base64
 import os, time
-import json
+import logging
+import threading
+import flet as ft
 import numpy as np
-from flet.security import decrypt
-from pages.ultils import compute_similarity, calculate_embedding, FaceDetector, center_crop_frame, update_attendance, DataCipher
+import cv2, cvzone
+from pages.ultils import FaceRecognitionFunctions, FaceDetector, center_crop_frame, update_attendance, DataCipher
 
 
 class SignInPage(ft.UserControl):
@@ -15,7 +15,7 @@ class SignInPage(ft.UserControl):
         self.page = page
         self.camera_manager = camera_manager
         self.admin_email_1 = 'ugo2000igwe12@gmail.com'
-        self.admin_email_2 = 'paularaegbu@yahoo.com'
+        self.admin_email_2 = 'aruegbepaul@gmail.com'
         self.file_data_path = 'application_data/application_storage/registered_data.json'
         self.camera = self.camera_manager.get_camera() # Get shared camera instance
         self.face_detector = FaceDetector()
@@ -53,6 +53,16 @@ class SignInPage(ft.UserControl):
             alignment='center',
             vertical_alignment='center'
         )
+
+    # Configure the logger
+    logging.basicConfig(
+        level=logging.ERROR,  # Set the log level
+        format="%(asctime)s - %(levelname)s - %(message)s",  # Log message format
+        filename="error_log.log",  # Save logs to a file (optional)
+        filemode="a"  # Append to the log file
+    )
+
+    logger = logging.getLogger(__name__)
 
     def toggle_loading(self, show):
         # This function toggles the loading animation
@@ -159,7 +169,7 @@ class SignInPage(ft.UserControl):
 
             # Get face embedding
             try:
-                unknown_encoding = calculate_embedding(cropped_face)
+                unknown_encoding = FaceRecognitionFunctions.get_face_encoding(self, cropped_face)
             except ValueError as e:
                 self.show_snackbar(str(e))
                 return
@@ -174,36 +184,40 @@ class SignInPage(ft.UserControl):
                     return
 
                 best_match = None
-                best_similarity = -1
-                
-                for user in user_data:
-                    email = self.data_cipher.decrypt_data(user['email'])
-                    fullname = self.data_cipher.decrypt_data(user['fullname'])
-                    registered_encoding = np.load(user['face_encoding'])
-                    similarity = compute_similarity(registered_encoding, unknown_encoding)
-                    
-                    if similarity > best_similarity:
-                        best_similarity = similarity
-                        best_match = user
+                highest_similarity = 0.0
 
-                    threshold = 0.4  # Adjust this threshold as needed
-                
-                    if best_similarity >= threshold:
-                        self.show_snackbar(f"Welcome back, {fullname}!")
-                        self.page.client_storage.set("recognized_user_data", best_match)
-                        email = self.data_cipher.decrypt_data(best_match['email'])
-                        email = email.strip().lower()
-                        status = 'old'
-                        self.page.client_storage.set('status', status)
-                        if email == self.admin_email_1.lower() or email == self.admin_email_2.lower():
-                            self.show_admin(email=email)
-                        else:
-                            self.show_user(email=email)
+                for user in user_data:
+                    registered_encoding = np.load(user['face_encoding'])
+                    similarity, is_match = FaceRecognitionFunctions.compare_faces(registered_encoding, unknown_encoding)
+                    print(f"User: {user['fullname']}, Similarity: {similarity}, Match: {is_match}")
+
+                    if is_match and similarity > highest_similarity:
+                        best_match = user
+                        highest_similarity = similarity
+
+                if best_match:
+                    fullname = self.data_cipher.decrypt_data(best_match['fullname'])
+                    self.show_snackbar(f"Welcome back, {fullname}!")
+                    self.page.client_storage.set("recognized_user_data", best_match)
+                    email_ = self.data_cipher.decrypt_data(best_match['email'])
+                    email = email_.strip().lower()
+                    user_role = best_match['user_role']
+                    self.page.client_storage.set("user_role", user_role)
+                    self.page.client_storage.set("registered_by_admin", False)
+
+                    if user_role == 'Administrator':
+                        self.show_admin(email=email)
                     else:
-                        self.show_snackbar("Face not recognized. Please try again.")
+                        self.show_user(email=email)
+                else:
+                    self.show_snackbar("Face not recognized. Please try again.")
+
             else:
                 self.show_snackbar("No registered users found. Please sign up first.")
         except Exception as e:
+            # Log the exception with context
+            self.logger.error("Error in process_data function", exc_info=True)
+            print(f'An error occured while processing the image, please try again. {e}')
             self.show_snackbar(f'An error occured while processing the image, please try again. {e}')
         finally:
             self.toggle_loading(False) # hide the loading animation
