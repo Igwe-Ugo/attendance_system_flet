@@ -198,11 +198,14 @@ class SignInPage(ft.UserControl):
                 if best_match:
                     fullname = self.data_cipher.decrypt_data(best_match['fullname'])
                     self.show_snackbar(f"Welcome back, {fullname}!")
+                    # Set session for regular user
                     self.page.client_storage.set("recognized_user_data", best_match)
+                    # set session for the admin
+                    self.page.client_storage.set("admin_data", best_match)
                     email_ = self.data_cipher.decrypt_data(best_match['email'])
                     email = email_.strip().lower()
                     user_role = best_match['user_role']
-                    self.page.client_storage.set("user_role", user_role)
+                    self.page.client_storage.set("user_role", user_role) # I don't know why I am setting this session?
                     self.page.client_storage.set("registered_by_admin", False)
 
                     if user_role == 'Administrator':

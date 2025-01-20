@@ -6,10 +6,10 @@ from PIL import Image
 from pages.ultils import update_attendance, DataCipher
 
 class Admin(ft.UserControl):
-    def __init__(self, page, user_data):
+    def __init__(self, page, admin_data):
         super().__init__()
         self.page = page
-        self.user_data = user_data
+        self.admin_data = admin_data
         self.running = True
         self.data_cipher = DataCipher()
         self.no_user = ft.Icon(
@@ -87,7 +87,7 @@ class Admin(ft.UserControl):
         self.page.client_storage.set("current_page", "/user")
 
     def build(self):
-        if not self.user_data:
+        if not self.admin_data:
             return ft.View(
                 controls = [
                     ft.AppBar(
@@ -113,16 +113,16 @@ class Admin(ft.UserControl):
                 ]
             )
 
-        encrypted_fullname = self.user_data.get('fullname', 'N/A')
-        encrypted_email = self.user_data.get('email', 'N/A')
-        encrypted_telephone = self.user_data.get('telephone', 'N/A')
+        encrypted_fullname = self.admin_data.get('fullname', 'N/A')
+        encrypted_email = self.admin_data.get('email', 'N/A')
+        encrypted_telephone = self.admin_data.get('telephone', 'N/A')
 
         # decrypting the user details
         plain_fullname = self.data_cipher.decrypt_data(encrypted_fullname)
         plain_email = self.data_cipher.decrypt_data(encrypted_email)
         plain_telephone = self.data_cipher.decrypt_data(encrypted_telephone)
 
-        img_data = self.load_image(self.user_data.get('face_image', None) or '')
+        img_data = self.load_image(self.admin_data.get('face_image', None) or '')
         
         controls = [
             ft.Text('RESTRICTED AREA', size=22, weight=ft.FontWeight.BOLD),
@@ -222,7 +222,7 @@ class Admin(ft.UserControl):
         print(f"Scrolled to offset: {event.pixels}")
 
     def admin_logout(self, e):
-        email = self.data_cipher.decrypt_data(self.user_data.get('email'))
+        email = self.data_cipher.decrypt_data(self.admin_data.get('email'))
         update_attendance(email=email, action='sign_out')
         self.page.go('/')
         self.page.client_storage.remove('admin_data')

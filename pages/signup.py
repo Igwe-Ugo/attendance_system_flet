@@ -60,8 +60,8 @@ class SignUpPage(ft.UserControl):
             on_click=self.check_signup_fields,
         )
 
-        self.is_admin = ft.Checkbox(label="Administrator", value=False),
-        self.is_user = ft.Checkbox(label="Regular User", value=False),
+        self.is_user = ft.Checkbox(label='Regular User', value=False)
+        self.is_admin = ft.Checkbox(label='Administrator', value=False)
 
         # using expanded and row to make the button span the full page width
         self.register_button_row = ft.Row(
@@ -98,19 +98,17 @@ class SignUpPage(ft.UserControl):
                                 self.fullname,
                                 self.email_address,
                                 self.telephone,
-                                ft.Divider(
-                                    height=50,
-                                    color='transparent'
-                                ),
-                                ft.Text('Please select a role for this user!', size=18, text_align='center', weight=ft.FontWeight.BOLD),
-                                ft.Divider(height=20, color='transparent'),
+                                ft.Divider(height=10, color='transparent'),
                                 ft.Row(
-                                    alignment=ft.MainAxisAlignment.CENTER,
                                     controls=[
+                                        ft.Text('Select the role for this user!', size=18, text_align='center', weight=ft.FontWeight.BOLD),
+                                        self.is_admin,
                                         self.is_user,
-                                        self.is_admin
-                                    ]
+                                    ],
+                                    alignment=ft.MainAxisAlignment.START,
+                                    spacing=20
                                 ),
+                                ft.Divider(height=20, color='transparent'),
                                 self.register_button_row
                             ]
                         )

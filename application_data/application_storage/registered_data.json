@@ -6,7 +6,7 @@
         "user_role": "Administrator",
         "face_image": "application_data/user_faces/ugo2000igwe12@gmail.com.jpg",
         "face_encoding": "application_data/user_faces_encoding/ugo2000igwe12@gmail.com_encoding.npy",
-        "total_attendance": 10,
+        "total_attendance": 6,
         "attendance_status": [
             {
                 "sign_in_time": "08-01-2025 12:35:54",
@@ -17,39 +17,23 @@
                 "sign_out_time": "08-01-2025 13:25:13"
             },
             {
-                "sign_in_time": "13-01-2025 12:42:19",
-                "sign_out_time": "13-01-2025 12:42:22"
-            },
-            {
-                "sign_in_time": "19-01-2025 17:13:58",
-                "sign_out_time": "19-01-2025 17:14:19"
-            },
-            {
-                "sign_in_time": "19-01-2025 17:35:33",
-                "sign_out_time": "19-01-2025 17:36:35"
-            },
-            {
-                "sign_in_time": "19-01-2025 19:53:18",
-                "sign_out_time": "19-01-2025 19:53:47"
-            },
-            {
-                "sign_in_time": "19-01-2025 20:35:59",
-                "sign_out_time": "19-01-2025 20:36:59"
-            },
-            {
-                "sign_in_time": "19-01-2025 20:43:05",
-                "sign_out_time": "19-01-2025 20:43:16"
-            },
-            {
                 "sign_in_time": "19-01-2025 20:43:48",
                 "sign_out_time": "19-01-2025 20:44:07"
             },
             {
-                "sign_in_time": "19-01-2025 22:24:57",
-                "sign_out_time": ""
+                "sign_in_time": "20-01-2025 22:12:49",
+                "sign_out_time": "20-01-2025 22:13:13"
+            },
+            {
+                "sign_in_time": "20-01-2025 22:31:38",
+                "sign_out_time": "20-01-2025 22:32:43"
+            },
+            {
+                "sign_in_time": "20-01-2025 22:37:42",
+                "sign_out_time": "20-01-2025 22:38:13"
             }
         ],
-        "last_attendance_time": "19-01-2025 20:44:07"
+        "last_attendance_time": "20-01-2025 22:38:13"
     },
     {
         "fullname": "gAAAAABnhYlnaFcfmdgJa7VEs8nDMRPVCg19B4p0hi5J9GtiQZTD-NESDqe93HbztXsq8Gnos74HXX7LfvuY5Ufxk0SI_IXY0rrhefVncTDhaI35tuG7kZc=",

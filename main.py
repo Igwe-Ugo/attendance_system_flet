@@ -85,13 +85,13 @@ def main(page: ft.Page):
         elif page.route.startswith("/admin"):
             # Extract user data from the route
             print("Loading User page")
-            user_data = page.client_storage.get("admin_data")
-            if user_data:
+            admin_data = page.client_storage.get("admin_data")
+            if admin_data:
                 page.views.append(
                     ft.View(
                         route="/admin",
                         controls=[
-                            Admin(page=page, user_data=user_data),
+                            Admin(page=page, admin_data=admin_data),
                         ]
                     )
                 )
