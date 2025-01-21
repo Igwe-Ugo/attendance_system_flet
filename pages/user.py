@@ -174,7 +174,8 @@ class User(ft.UserControl):
 
     def logout_user(self, e):
         email = self.user_data.get('email')
-        update_attendance(email=email, action='sign_out')
+        email_decrypt = self.data_cipher.decrypt_data(email)
+        update_attendance(email=email_decrypt, action='sign_out')
 
         # Retrieve the registered_by_admin flag
         registered_by_admin = self.page.client_storage.get("registered_by_admin")

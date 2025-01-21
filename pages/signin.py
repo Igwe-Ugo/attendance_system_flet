@@ -14,8 +14,6 @@ class SignInPage(ft.UserControl):
         super().__init__()
         self.page = page
         self.camera_manager = camera_manager
-        self.admin_email_1 = 'ugo2000igwe12@gmail.com'
-        self.admin_email_2 = 'aruegbepaul@gmail.com'
         self.file_data_path = 'application_data/application_storage/registered_data.json'
         self.camera = self.camera_manager.get_camera() # Get shared camera instance
         self.face_detector = FaceDetector()
@@ -199,7 +197,7 @@ class SignInPage(ft.UserControl):
                     fullname = self.data_cipher.decrypt_data(best_match['fullname'])
                     self.show_snackbar(f"Welcome back, {fullname}!")
                     # Set session for regular user
-                    self.page.client_storage.set("recognized_user_data", best_match)
+                    self.page.client_storage.set("user_data", best_match)
                     # set session for the admin
                     self.page.client_storage.set("admin_data", best_match)
                     email_ = self.data_cipher.decrypt_data(best_match['email'])
