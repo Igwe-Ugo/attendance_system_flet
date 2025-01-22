@@ -6,85 +6,13 @@
         "user_role": "Administrator",
         "face_image": "application_data/user_faces/ugo2000igwe12@gmail.com.jpg",
         "face_encoding": "application_data/user_faces_encoding/ugo2000igwe12@gmail.com_encoding.npy",
-        "total_attendance": 7,
-        "attendance_status": [
-            {
-                "sign_in_time": "08-01-2025 12:35:54",
-                "sign_out_time": "08-01-2025 12:36:01"
-            },
-            {
-                "sign_in_time": "08-01-2025 13:24:48",
-                "sign_out_time": "08-01-2025 13:25:13"
-            },
-            {
-                "sign_in_time": "19-01-2025 20:43:48",
-                "sign_out_time": "19-01-2025 20:44:07"
-            },
-            {
-                "sign_in_time": "20-01-2025 22:12:49",
-                "sign_out_time": "20-01-2025 22:13:13"
-            },
-            {
-                "sign_in_time": "20-01-2025 22:31:38",
-                "sign_out_time": "20-01-2025 22:32:43"
-            },
-            {
-                "sign_in_time": "20-01-2025 22:37:42",
-                "sign_out_time": "20-01-2025 22:38:13"
-            },
-            {
-                "sign_in_time": "21-01-2025 13:48:40",
-                "sign_out_time": "21-01-2025 13:50:58"
-            }
-        ],
-        "last_attendance_time": "21-01-2025 13:50:58"
-    },
-    {
-        "fullname": "gAAAAABnhYlnaFcfmdgJa7VEs8nDMRPVCg19B4p0hi5J9GtiQZTD-NESDqe93HbztXsq8Gnos74HXX7LfvuY5Ufxk0SI_IXY0rrhefVncTDhaI35tuG7kZc=",
-        "email": "gAAAAABnhYlnZY9iEHxtBCxnhazW_9bTzQmp5SFJ8IKwpHDqgUBCpEXpbmDE1Qz93ONk-A-8uQg2LaVafIIByAaYUFFHlwzXK0q8ueD5UWp3yztr1NlF1nk=",
-        "telephone": "gAAAAABnhYlnO7E6Enm-1B0LDU0QFTfMZzaaG5BvKLHP7VLvuYXA90xhAa0jMxxBAoOfwdIi2GHT5CisbcEBSeiICXRmlN_hNw==",
-        "user_role": "Administrator",
-        "face_image": "application_data/user_faces/aruegbepaul@gmail.com.jpeg",
-        "face_encoding": "application_data/user_faces_encoding/aruegbepaul@gmail.com_encoding.npy",
         "total_attendance": 1,
         "attendance_status": [
             {
-                "sign_in_time": "13-01-2025 22:42:19",
-                "sign_out_time": "13-01-2025 22:45:11"
+                "sign_in_time": "21-01-2025 19:45:26",
+                "sign_out_time": "21-01-2025 19:51:17"
             }
         ],
-        "last_attendance_time": "13-01-2025 22:45:11"
-    },
-    {
-        "fullname": "gAAAAABnjSv2z88MD2q49cToVY1HZN1Ue_n6oU8wi0xlhsK2ckwVbcURtu10RQBXAUWi4MyCpQ3lqBG6k82fmnAdO9LVNniSwG5uCw-fkFLeWh6VohJKxew=",
-        "email": "gAAAAABnjSv2g_b2EwVWLDHfQDTpuKe4tdOZBvIYKD_1zDG1_mbyKDBlzJ1gmm0HdsPLMg6DSmpBFuPPjWDPvd90OsJd4WIC3gszIB27aIb7U__uEmHicUM=",
-        "telephone": "gAAAAABnjSv2jIWVSR91H-Ld7uOwSsUzF05Tum345sdGJJXrnu78CWIyE0YCOUEE4E4d9hh4DviD-mTAvc99su-JJ_PKtTsi8A==",
-        "user_role": "Regular User",
-        "face_image": "application_data/user_faces/igwennenna891@gmail.com.jpg",
-        "face_encoding": "application_data/user_faces_encoding/igwennenna891@gmail.com_encoding.npy",
-        "total_attendance": 1,
-        "attendance_status": [
-            {
-                "sign_in_time": "19-01-2025 17:44:38",
-                "sign_out_time": "19-01-2025 17:45:55"
-            }
-        ],
-        "last_attendance_time": "19-01-2025 17:45:55"
-    },
-    {
-        "fullname": "gAAAAABnj5ggOnpBP3vekH9nQ-XF5Ikdl7TwyQtHJBtM-GjMtZGAu_v1M8AW-7mBJaRlsKF86jJe4yOmDcoa_-Wa7XBdtT8vQJXfSFPTnGq3yJsliQaECWI=",
-        "email": "gAAAAABnj5ggp4l668a3nuTS8Xd4n3H9NJega035csuu0POBeXH5VNxWM9QPgSyginiQzJ8lmCngvLG1FRkElvwywFayoARg8ATmK_OM6Amsl_xtOxig9rI=",
-        "telephone": "gAAAAABnj5ggE2eNzF33Gd-vB9YMTXjVnDnMTQONr0HGip6txGfktHQQ5RQVFX7QyKulZRH0kLBCyGnZhGPG4AfzAY8P8brS8w==",
-        "user_role": "Regular User",
-        "face_image": "application_data/user_faces/ilodikelu123@yahoo.com.jpg",
-        "face_encoding": "application_data/user_faces_encoding/ilodikelu123@yahoo.com_encoding.npy",
-        "total_attendance": 1,
-        "attendance_status": [
-            {
-                "sign_in_time": "21-01-2025 14:12:21",
-                "sign_out_time": "21-01-2025 14:12:24"
-            }
-        ],
-        "last_attendance_time": "21-01-2025 14:12:24"
+        "last_attendance_time": "21-01-2025 19:51:17"
     }
 ]

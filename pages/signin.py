@@ -167,7 +167,7 @@ class SignInPage(ft.UserControl):
 
             # Get face embedding
             try:
-                unknown_encoding = FaceRecognitionFunctions.get_face_encoding(self, cropped_face)
+                unknown_encoding = FaceRecognitionFunctions.get_face_encoding(self, frame)
             except ValueError as e:
                 self.show_snackbar(str(e))
                 return
@@ -187,7 +187,8 @@ class SignInPage(ft.UserControl):
                 for user in user_data:
                     registered_encoding = np.load(user['face_encoding'])
                     similarity, is_match = FaceRecognitionFunctions.compare_faces(registered_encoding, unknown_encoding)
-                    print(f"User: {user['fullname']}, Similarity: {similarity}, Match: {is_match}")
+                    name = self.data_cipher.decrypt_data(user['fullname'])
+                    print(f"User: {name}, Similarity: {similarity}, Match: {is_match}")
 
                     if is_match and similarity > highest_similarity:
                         best_match = user
@@ -203,7 +204,7 @@ class SignInPage(ft.UserControl):
                     email_ = self.data_cipher.decrypt_data(best_match['email'])
                     email = email_.strip().lower()
                     user_role = best_match['user_role']
-                    self.page.client_storage.set("user_role", user_role) # I don't know why I am setting this session?
+                    self.page.client_storage.set("user_role", user_role)
                     self.page.client_storage.set("registered_by_admin", False)
 
                     if user_role == 'Administrator':

@@ -13,8 +13,6 @@ class RegisterFace(ft.UserControl):
         self.face_detector = FaceDetector()
         self.data_cipher = DataCipher()
         self.camera_manager = camera_manager
-        self.admin_email_1 = 'ugo2000igwe12@gmail.com'
-        self.admin_email_2 = 'aruegbepaul@gmail.com'
         self.camera = self.camera_manager.get_camera()
         self.img = ft.Image(
             border_radius=ft.border_radius.all(20),
